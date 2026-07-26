@@ -2,7 +2,7 @@
   "slug": "webtransport-baseline-oldu-fallback-i-silmenin-tam-zamani-mi",
   "title": "WebTransport Baseline oldu. Fallback'i silmenin tam zamanı mı?",
   "category": "Ajanlar",
-  "date": "2026-07-26",
+  "date": "2026-07-21",
   "readMinutes": 2,
   "excerpt": "Mart ayında Safari 26.4 ile WebTransport dört büyük tarayıcıda çalışır hâle geldi. Xaron'da WebSocket fallback'ini hiç yazmadık — bu kararın getirisini de bedelini de anlatayım.",
   "published": true,
