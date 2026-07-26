@@ -1,6 +1,8 @@
 import type { Bi } from "@/lib/i18n";
 
-export type Shot = { src: string; caption: Bi };
+/** w/h are the file's real pixel dimensions — never guessed. They fix the
+ *  reserved aspect ratio and let us refuse to upscale a small source. */
+export type Shot = { src: string; caption: Bi; w: number; h: number };
 export type Feature = { title: Bi; body: Bi };
 export type Stat = { value: string; label: Bi };
 
@@ -101,7 +103,18 @@ export const projects: Project[] = [
     ],
     gallery: [
       {
+        src: "/projects/dravion/cockpit.png",
+        w: 2620,
+        h: 620,
+        caption: {
+          en: "The fleet, live — workers running while a diff waits for your call.",
+          tr: "Filo iş başında — worker'lar çalışırken bir diff senin onayını bekliyor.",
+        },
+      },
+      {
         src: "/projects/dravion/patterns.png",
+        w: 1283,
+        h: 850,
         caption: {
           en: "Design system — honest failures, quiet loading.",
           tr: "Design system — dürüst hatalar, sessiz yüklenme.",
@@ -174,7 +187,27 @@ export const projects: Project[] = [
     ],
     gallery: [
       {
+        src: "/projects/xaron/e2e.png",
+        w: 2620,
+        h: 1020,
+        caption: {
+          en: "Encrypted by default, free to run, monetizable at 1%.",
+          tr: "Varsayılan şifreli, ücretsiz kurulur, %1 ile gelir getirir.",
+        },
+      },
+      {
+        src: "/projects/xaron/pricing.png",
+        w: 2620,
+        h: 1020,
+        caption: {
+          en: "Free forever, Premium for the rest.",
+          tr: "Sonsuza dek ücretsiz; gerisi için Premium.",
+        },
+      },
+      {
         src: "/projects/xaron/community.png",
+        w: 1300,
+        h: 810,
         caption: {
           en: "Community — text, voice & video channels, in light and dark.",
           tr: "Topluluk — metin, ses & video kanalları, açık ve koyu temada.",
@@ -244,12 +277,39 @@ export const projects: Project[] = [
       },
     ],
     gallery: [
-      { src: "/projects/sperare/landing.png", caption: { en: "Landing — safe, guided immigration.", tr: "Landing — güvenli, rehberli göçmenlik." } },
-      { src: "/projects/sperare/02-case-detay.png", caption: { en: "Case detail — escrow & payment timeline.", tr: "Case detay — escrow & ödeme çizelgesi." } },
-      { src: "/projects/sperare/release-modal.png", caption: { en: "Escrow release — funds move on milestones.", tr: "Escrow serbest bırakma — para aşamalarda ilerler." } },
-      { src: "/projects/sperare/sahsi-migration.png", caption: { en: "Consultant workspace — clients and invites.", tr: "Danışman paneli — danışanlar ve davetler." } },
-      { src: "/projects/sperare/app-dosyalar.png", caption: { en: "Document vault — everything in one place.", tr: "Belge kasası — her şey tek yerde." } },
-      { src: "/projects/sperare/01-mob-danisan-1.png", caption: { en: "Mobile — fraud protection built in.", tr: "Mobil — yerleşik dolandırıcılık koruması." } },
+      {
+        src: "/projects/sperare/mockups.png",
+        w: 2620,
+        h: 760,
+        caption: {
+          en: "Discover, escrow and the document vault — the three things that build trust.",
+          tr: "Keşfet, escrow ve belge kasası — güveni kuran üç şey.",
+        },
+      },
+      {
+        src: "/projects/sperare/landing.png",
+        w: 1250,
+        h: 820,
+        caption: { en: "Landing — safe, guided immigration.", tr: "Landing — güvenli, rehberli göçmenlik." },
+      },
+      {
+        src: "/projects/sperare/02-case-detay.png",
+        w: 924,
+        h: 540,
+        caption: { en: "Case detail — escrow & payment timeline.", tr: "Case detay — escrow & ödeme çizelgesi." },
+      },
+      {
+        src: "/projects/sperare/release-modal.png",
+        w: 924,
+        h: 540,
+        caption: { en: "Escrow release — funds move on milestones.", tr: "Escrow serbest bırakma — para aşamalarda ilerler." },
+      },
+      {
+        src: "/projects/sperare/app-dosyalar.png",
+        w: 924,
+        h: 540,
+        caption: { en: "Document vault — everything in one place.", tr: "Belge kasası — her şey tek yerde." },
+      },
     ],
   },
   {
@@ -332,11 +392,10 @@ export const projects: Project[] = [
       },
     ],
     gallery: [
-      { src: "/projects/teck/01-kapak.png", caption: { en: "AREL MODA — the case study cover.", tr: "AREL MODA — vaka çalışması kapağı." } },
-      { src: "/projects/teck/02-mobil.png", caption: { en: "Mobile — stock and selling in one hand.", tr: "Mobil — tek elde stok ve satış." } },
-      { src: "/projects/teck/03-web-panel.png", caption: { en: "Web admin — full control on the desktop.", tr: "Web panel — masaüstünde tam kontrol." } },
-      { src: "/projects/teck/04-ozellikler.png", caption: { en: "Features at a glance.", tr: "Özellikler bir bakışta." } },
-      { src: "/projects/teck/05-teslimat.png", caption: { en: "Delivered end to end.", tr: "Uçtan uca teslim edildi." } },
+      { src: "/projects/teck/01-kapak.png", w: 720, h: 540, caption: { en: "AREL MODA — the case study cover.", tr: "AREL MODA — vaka çalışması kapağı." } },
+      { src: "/projects/teck/02-mobil.png", w: 720, h: 540, caption: { en: "Mobile — stock and selling in one hand.", tr: "Mobil — tek elde stok ve satış." } },
+      { src: "/projects/teck/03-web-panel.png", w: 720, h: 540, caption: { en: "Web admin — full control on the desktop.", tr: "Web panel — masaüstünde tam kontrol." } },
+      { src: "/projects/teck/05-teslimat.png", w: 720, h: 540, caption: { en: "Delivered end to end.", tr: "Uçtan uca teslim edildi." } },
     ],
   },
 ];

@@ -488,3 +488,7 @@ html.js-ready .reveal.in { opacity: 1; transform: none; }
   .deep-cols { grid-template-columns: 1fr; }
 }
 @media (max-width: 560px) { .proj-meta { grid-template-columns: 1fr; } }
+
+/* Screenshots narrower than the column stay centred rather than stretching. */
+.gallery { align-items: center; }
+.shot { width: 100%; }

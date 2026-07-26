@@ -140,15 +140,24 @@ export default async function ProjectPage({
         <section className="section" style={{ padding: "32px 24px 16px" }}>
           <div className="gallery">
             {p.gallery.map((s, i) => (
-              <figure key={s.src} className="shot reveal" data-d={i * 50}>
+              <figure
+                key={s.src}
+                className="shot reveal"
+                data-d={i * 50}
+                // Never display a screenshot wider than the file actually is:
+                // upscaling a UI capture is what makes it look mushy.
+                style={{ maxWidth: `min(100%, ${s.w}px)` }}
+              >
                 <Image
                   src={s.src}
                   alt={s.caption[lang]}
-                  width={1440}
-                  height={900}
-                  sizes="(max-width: 1100px) 100vw, 1080px"
-                  style={{ height: "auto" }}
+                  width={s.w}
+                  height={s.h}
+                  sizes={`(max-width: 1140px) 100vw, ${Math.min(s.w, 1080)}px`}
+                  quality={90}
+                  style={{ width: "100%", height: "auto" }}
                   loading={i === 0 ? "eager" : "lazy"}
+                  priority={i === 0}
                 />
                 <figcaption className="cap">{s.caption[lang]}</figcaption>
               </figure>
