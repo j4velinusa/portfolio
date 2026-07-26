@@ -10,6 +10,7 @@ import { Nav } from "@/components/Nav";
 import { RevealProvider } from "@/components/Reveal";
 import { Mockup } from "@/components/mockups";
 import { ProjectJsonLd } from "@/components/JsonLd";
+import { projectMeta, deepDive } from "@/content/deepdive";
 
 // Loaded only by this route, so the dark chrome pages never fetch it.
 const fraunces = Fraunces({
@@ -108,6 +109,29 @@ export default async function ProjectPage({
         )}
       </header>
 
+      {projectMeta[p.slug] && (
+        <section className="section" style={{ paddingBottom: 8 }}>
+          <dl className="proj-meta">
+            {projectMeta[p.slug].map((row) => (
+              <div key={row.k.en}>
+                <dt>{row.k[lang]}</dt>
+                <dd>{row.v[lang]}</dd>
+              </div>
+            ))}
+            {p.liveUrl && (
+              <div>
+                <dt>{lang === "en" ? "Live" : "Canlı"}</dt>
+                <dd>
+                  <a href={p.liveUrl} target="_blank" rel="noreferrer" style={{ color: th.accent }}>
+                    {p.liveUrl.replace("https://", "")} ↗
+                  </a>
+                </dd>
+              </div>
+            )}
+          </dl>
+        </section>
+      )}
+
       <section className="section" style={{ paddingBottom: 32 }}>
         <Mockup slug={p.slug} lang={lang} />
       </section>
@@ -142,7 +166,69 @@ export default async function ProjectPage({
             </div>
           ))}
         </div>
-        <div className="tech-row reveal" style={{ marginTop: 44 }}>
+      </section>
+
+      {(deepDive[p.slug] ?? []).map((sec) => (
+        <section key={sec.label.en} className="section deep" style={{ paddingBottom: 72 }}>
+          <div className="container" style={{ padding: 0 }}>
+            <div className="section-lab">{sec.label[lang]}</div>
+            {sec.quote && (
+              <p className="deep-quote reveal" style={{ borderColor: th.accent }}>
+                {sec.quote[lang]}
+              </p>
+            )}
+            {sec.columns && (
+              <div className="deep-cols">
+                {sec.columns.map((c) => (
+                  <div key={c.title.en} className="feat reveal">
+                    <div className="t" style={{ fontSize: 18 }}>
+                      {c.title[lang]}
+                    </div>
+                    <ul className="bullets" style={{ marginTop: 14 }}>
+                      {c.points[lang].map((pt) => (
+                        <li key={pt}>
+                          <span style={{ color: th.accent }}>—</span> {pt}
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                ))}
+              </div>
+            )}
+            {sec.items.length > 0 && (
+              <div className={`feat-grid ${sec.items.length === 2 ? "feat-2" : "feat-3"}`}>
+                {sec.items.map((it, i) => (
+                  <div key={it.title.en} className="feat reveal" data-d={i * 60}>
+                    <div className="t" style={{ fontSize: 18 }}>
+                      {it.title[lang]}
+                    </div>
+                    <div className="b">{it.body[lang]}</div>
+                    {it.tags && (
+                      <div className="deep-tags">
+                        {it.tags.map((t) => (
+                          <code key={t}>{t}</code>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+                ))}
+              </div>
+            )}
+            {sec.chips && (
+              <div className="tech-row reveal" style={{ marginTop: 26 }}>
+                {sec.chips.map((c) => (
+                  <span key={c} className="chip">
+                    {c}
+                  </span>
+                ))}
+              </div>
+            )}
+          </div>
+        </section>
+      ))}
+
+      <section className="section" style={{ paddingBottom: 88 }}>
+        <div className="tech-row reveal">
           {p.tech.map((t) => (
             <span key={t} className="chip">
               {t}

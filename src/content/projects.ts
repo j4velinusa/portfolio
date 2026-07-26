@@ -60,7 +60,7 @@ export const projects: Project[] = [
     },
     blurb: {
       en: "A supervised autonomous engineering cockpit. You describe the work; a Manager Agent plans it and a fleet of workers ships it.",
-      tr: "Denetimli, otonom bir mühendislik kokpiti. İşi sen anlatırsın; Manager Agent planlar, worker filosu yayına alır.",
+      tr: "Denetimli, otonom bir mühendislik masası. Ne istediğini anlatıyorsun; Manager Agent planlıyor, worker filosu yazıp teslim ediyor.",
     },
     bullets: {
       en: [
@@ -69,9 +69,9 @@ export const projects: Project[] = [
         "Idea → questions → roadmap → workers → diff → deploy-ready",
       ],
       tr: [
-        "Manager Agent eksik soruları sorar, sonra planlar ve delege eder",
-        "Worker'lar izole Docker sandbox'larında çalışır: dosya, terminal, commit",
-        "Fikir → sorular → yol haritası → worker'lar → diff → yayına hazır",
+        "Manager Agent eksikleri sorar, planı çıkarır, işi dağıtır",
+        "Worker'lar izole Docker sandbox'ında çalışır: dosya, terminal, commit",
+        "Fikir → sorular → yol haritası → worker'lar → diff → yayına hazır kod",
       ],
     },
     tech: ["Next.js 15", "TypeScript", "PostgreSQL + pgvector", "Drizzle", "BullMQ + Redis", "Docker", "OpenTelemetry"],
@@ -81,21 +81,21 @@ export const projects: Project[] = [
         title: { en: "One conversation.", tr: "Tek konuşma." },
         body: {
           en: "You talk to a single Manager Agent. It asks what's missing, breaks the request down, delegates, and reports back.",
-          tr: "Tek bir Manager Agent ile konuşursun. Eksiği sorar, isteği parçalar, delege eder ve geri raporlar.",
+          tr: "Tek bir Manager Agent ile konuşuyorsun. Eksiği sorar, işi parçalar, dağıtır ve sana rapor eder. Worker'ları sen yönetmiyorsun.",
         },
       },
       {
         title: { en: "Isolated sandboxes.", tr: "İzole sandbox'lar." },
         body: {
           en: "Every worker runs in its own Docker container — reading and writing files, running terminal commands, committing code.",
-          tr: "Her worker kendi Docker konteynerinde çalışır — dosya okur/yazar, terminal komutu çalıştırır, kod commit'ler.",
+          tr: "Her worker kendi Docker konteynerinde çalışır: dosya okur yazar, terminal komutu çalıştırır, oturum dalına commit atar.",
         },
       },
       {
         title: { en: "Supervised, not blind.", tr: "Denetimli, kör değil." },
         body: {
           en: "Agents plan, write, test and commit on their own — but the roadmap and the diff are yours to review. Not an AI-assisted editor.",
-          tr: "Ajanlar kendi başlarına planlar, yazar, test eder ve commit'ler — ama yol haritası ve diff senin onayında. AI-editör değil.",
+          tr: "Ajanlar planı da kodu da testi de kendi yapar; ama riskli her adımda diff'i önüne koyup onayını bekler. AI destekli editör değil.",
         },
       },
     ],
@@ -127,7 +127,7 @@ export const projects: Project[] = [
     tagline: { en: "Your community. Actually yours.", tr: "Senin topluluğun. Gerçekten senin." },
     blurb: {
       en: "A privacy-first home for gaming communities and creators — no ads, no data mining.",
-      tr: "Oyun toplulukları ve creator'lar için gizlilik-öncelikli bir ev — reklam yok, veri madenciliği yok.",
+      tr: "Oyun toplulukları ve içerik üreticileri için gizliliği önce koyan bir ev. Reklam yok, veri madenciliği yok.",
     },
     bullets: {
       en: [
@@ -136,15 +136,15 @@ export const projects: Project[] = [
         "Paid tiers with real-time earnings, flat 1% commission",
       ],
       tr: [
-        "Uçtan uca şifreli DM'ler — biz bile okuyamıyoruz",
-        "Ücretsiz metin, ses & video kanalları, ekran paylaşımı dahil",
-        "Gerçek-zamanlı kazançlı ücretli katmanlar, %1 sabit komisyon",
+        "Uçtan uca şifreli DM — biz bile okuyamıyoruz",
+        "Ücretsiz metin, ses ve video kanalları, ekran paylaşımı dahil",
+        "Ücretli üyelik katmanları, anlık kazanç takibi, %1 sabit komisyon",
       ],
     },
     stats: [
-      { value: "E2E", label: { en: "encrypted DMs", tr: "şifreli DM" } },
+      { value: "E2E", label: { en: "encrypted DMs", tr: "şifreli mesajlar" } },
       { value: "1%", label: { en: "flat commission", tr: "sabit komisyon" } },
-      { value: "0", label: { en: "ads, forever", tr: "reklam, sonsuza dek" } },
+      { value: "0", label: { en: "ads, forever", tr: "reklam, hiç" } },
     ],
     tech: ["Rust", "Axum", "Leptos/WASM", "OpenMLS (RFC 9420)", "WebTransport/QUIC", "ScyllaDB", "LiveKit"],
     liveUrl: "https://xaron.co",
@@ -154,21 +154,21 @@ export const projects: Project[] = [
         title: { en: "End-to-end encrypted.", tr: "Uçtan uca şifreli." },
         body: {
           en: "Direct messages no one else can read — not even us. Privacy is the default, not a setting.",
-          tr: "Kimsenin okuyamadığı direkt mesajlar — biz bile. Gizlilik varsayılan, ayar değil.",
+          tr: "Kimsenin okuyamadığı özel mesajlar; biz de dahil. Gizlilik bir ayar değil, varsayılan.",
         },
       },
       {
         title: { en: "Voice & video communities.", tr: "Ses & video toplulukları." },
         body: {
           en: "Free text, voice and video channels with screen sharing. No ads, no data mining, ever.",
-          tr: "Ücretsiz metin, ses ve video kanalları + ekran paylaşımı. Ne reklam, ne veri madenciliği.",
+          tr: "Metin, ses ve video kanalları, üstüne ekran paylaşımı — ücretsiz planda. Ne reklam ne veri madenciliği.",
         },
       },
       {
         title: { en: "Creators keep it.", tr: "Kazanç creator'da kalır." },
         body: {
           en: "Paid subscription tiers and a real-time view of earnings — at a flat 1% platform commission.",
-          tr: "Ücretli abonelik katmanları ve gerçek-zamanlı kazanç görünümü — %1 sabit platform komisyonuyla.",
+          tr: "Ücretli üyelik katmanları ve anlık kazanç ekranı. Platform payı sabit %1; gizli kesinti yok.",
         },
       },
     ],
@@ -204,7 +204,7 @@ export const projects: Project[] = [
     },
     blurb: {
       en: "A marketplace for expats and migration offices — verified consultants, money held in escrow, and every document in one encrypted vault.",
-      tr: "Yurt dışına gidenler ve göçmenlik ofisleri için pazar yeri — doğrulanmış danışmanlar, escrow'da tutulan para ve tek şifreli kasada tüm belgeler.",
+      tr: "Yurt dışına gidenlerle göçmenlik ofislerini buluşturan pazar yeri: kimliği doğrulanmış danışmanlar, iş bitene kadar emanette duran para ve tüm belgeler tek kasada.",
     },
     bullets: {
       en: [
@@ -213,9 +213,9 @@ export const projects: Project[] = [
         "Client app and consultant CRM are one system",
       ],
       tr: [
-        "Kimliği doğrulanmış, gerçek belgeli ve yorumlu danışmanlar",
-        "Escrow parayı aşama aşama serbest bırakır, asla peşin değil",
-        "Danışan uygulaması ve danışman CRM'i tek sistem",
+        "Kimliği doğrulanmış, belgesi ve yorumu gerçek danışmanlar",
+        "Para aşama aşama serbest kalır; peşin ödeme yok",
+        "Danışan uygulaması ve danışman CRM'i aynı sistem",
       ],
     },
     tech: ["React Native", "Expo SDK 56", "Supabase (Postgres, RLS)", "Stripe Connect", "KYC"],
@@ -225,21 +225,21 @@ export const projects: Project[] = [
         title: { en: "Verified consultants.", tr: "Doğrulanmış danışmanlar." },
         body: {
           en: "Every consultant is identity-verified with real credentials. Clients discover, compare and choose with confidence.",
-          tr: "Her danışman gerçek belgelerle kimlik doğrulamalı. Danışanlar güvenle keşfeder, karşılaştırır ve seçer.",
+          tr: "Her danışmanın kimliği listeye girmeden önce doğrulanıyor. Danışan rahatça araştırıyor, karşılaştırıyor, seçiyor.",
         },
       },
       {
         title: { en: "Escrow payments.", tr: "Escrow ödemeler." },
         body: {
           en: "Money is held safely and released against milestones — Stripe Connect escrow, never paid up front.",
-          tr: "Para güvenle tutulur, aşamalara göre serbest bırakılır — Stripe Connect escrow, asla peşin değil.",
+          tr: "Para emanet hesabında duruyor ve aşama tamamlandıkça serbest kalıyor. Stripe Connect escrow; ne peşin ne boşluğa.",
         },
       },
       {
         title: { en: "One encrypted vault.", tr: "Tek şifreli kasa." },
         body: {
           en: "Documents, timeline and status in one place — multi-language, for clients and consultants alike.",
-          tr: "Belgeler, süreç ve durum tek yerde — çok dilli, danışan ve danışman için.",
+          tr: "Belgeler, süreç ve durum tek yerde. Danışman yalnızca dosyanın gerektirdiğini görüyor.",
         },
       },
     ],
@@ -271,7 +271,7 @@ export const projects: Project[] = [
     tagline: { en: "Scan. Sync. Sell.", tr: "Scan. Sync. Sell." },
     blurb: {
       en: "A barcode stock app for fashion retail, an online storefront, and an admin panel — designed and built end to end. One scan updates the shop floor and the web store together.",
-      tr: "Moda perakendesi için barkodlu stok uygulaması, online mağaza ve yönetim paneli — uçtan uca tasarlandı ve geliştirildi. Tek okutma mağaza ve web mağazasını birlikte güncelliyor.",
+      tr: "Moda perakendesi için barkodlu stok uygulaması, online mağaza ve yönetim paneli — baştan sona tasarlanıp geliştirildi. Tek okutma, mağazayla web mağazasını birlikte güncelliyor.",
     },
     bullets: {
       en: [
@@ -280,9 +280,9 @@ export const projects: Project[] = [
         "Mobile app, online storefront and admin panel — end to end",
       ],
       tr: [
-        "Mobilden okut — mağaza ve web mağazası anında senkron",
-        "Beden × renk matrisi, kampanyalar ve kanal bazlı kâr/zarar",
-        "Mobil uygulama, online mağaza ve admin paneli — uçtan uca",
+        "Mobilden okut; mağaza ve web mağazası aynı anda güncellenir",
+        "Beden × renk matrisi, kampanyalar, kanal kanal kâr/zarar",
+        "Mobil uygulama, online mağaza ve yönetim paneli — baştan sona",
       ],
     },
     tech: ["React Native", "Expo", "Node.js", "PostgreSQL"],
@@ -292,42 +292,42 @@ export const projects: Project[] = [
         title: { en: "Barcode selling.", tr: "Barkod ile satış." },
         body: {
           en: "Scan, pick the variant, and stock drops instantly — in the shop and online together.",
-          tr: "Okut, varyantı seç, stok anında düşsün — mağaza ve online birlikte.",
+          tr: "Okut, varyantı seç, stok anında düşsün. Mağaza ve online birlikte.",
         },
       },
       {
         title: { en: "Size × colour matrix.", tr: "Beden × renk matrisi." },
         body: {
           en: "Every size and colour on one screen; what's critical or sold out shows up immediately.",
-          tr: "Tüm bedenler ve renkler tek ekranda; kritik ve tükenen anında görünür.",
+          tr: "Bütün bedenler ve renkler tek ekranda; kritiğe düşen ve tükenen hemen göze çarpıyor.",
         },
       },
       {
         title: { en: "Profit / loss analysis.", tr: "Kâr / zarar analizi." },
         body: {
           en: "Cost-to-sale spread, margin, and profit by channel — the real number after discounts.",
-          tr: "Geliş–satış farkı, marj ve kanal bazlı kâr; iskonto sonrası net rakam.",
+          tr: "Geliş–satış farkı, marj ve kanal bazlı kâr. İskonto sonrası net rakam.",
         },
       },
       {
         title: { en: "Store ↔ online sync.", tr: "Mağaza ↔ online senkron." },
         body: {
           en: "One stock, two channels. The moment something sells, the e-commerce stock updates too.",
-          tr: "Tek stok, iki kanal. Satış olduğu an e-ticaret stoğu da güncellenir.",
+          tr: "Tek stok, iki kanal. Satış olduğu an e-ticaret stoğu da düşüyor.",
         },
       },
       {
         title: { en: "Campaigns & discounts.", tr: "Kampanya & indirim." },
         body: {
           en: "Per-product online discounts; the old price is struck through and the new one shines.",
-          tr: "Ürüne özel online indirim; vitrinde eski fiyat çizilir, yeni fiyat parlar.",
+          tr: "Ürüne özel online indirim; vitrinde eski fiyat çizilir, yenisi öne çıkar.",
         },
       },
       {
         title: { en: "Date-range reports.", tr: "Tarih aralıklı rapor." },
         body: {
           en: "Net profit, revenue, returns, discounts and product performance — printable paperwork.",
-          tr: "Net kâr, ciro, iade, indirim ve ürün performansı — yazdırılabilir evrak.",
+          tr: "Net kâr, ciro, iade, indirim ve ürün performansı; yazdırmaya hazır rapor.",
         },
       },
     ],

@@ -17,7 +17,7 @@ export const site = {
     title: "Code. Ship. Repeat.",
     subtitle: {
       en: "Doğan Aykaç — full-stack developer. Twelve years of building: agent platforms, encrypted communities, safe marketplaces, retail automation.",
-      tr: "Doğan Aykaç — full-stack geliştirici. On iki yıldır inşa ediyorum: ajan platformları, şifreli topluluklar, güvenli pazar yerleri, perakende otomasyonu.",
+      tr: "Doğan Aykaç — full-stack geliştirici. On iki yıldır kod yazıyorum: ajan platformları, şifreli topluluklar, güvenli pazar yerleri, perakende otomasyonu.",
     } as Bi,
   },
 
@@ -25,11 +25,11 @@ export const site = {
     years: { en: "12 years", tr: "12 yıl" } as Bi,
     yearsSub: {
       en: "of building software — since I was 11",
-      tr: "yazılım geliştiriyorum — 11 yaşımdan beri",
+      tr: "kod yazıyorum — 11 yaşımdan beri",
     } as Bi,
     talk: { en: "Let's talk.", tr: "Konuşalım." } as Bi,
     location: { en: "İstanbul, TR", tr: "İstanbul, TR" } as Bi,
-    locationSub: { en: "UTC+3 · remote-ready", tr: "UTC+3 · remote'a hazır" } as Bi,
+    locationSub: { en: "UTC+3 · remote-ready", tr: "UTC+3 · remote çalışırım" } as Bi,
     tags: ["Rust", "TypeScript", "Next.js", "React Native", "Docker", "PostgreSQL"],
   },
 
@@ -37,27 +37,27 @@ export const site = {
     title: { en: "The work.", tr: "İşler." } as Bi,
     sub: {
       en: "Every project is a product. Each one gets its own page.",
-      tr: "Her proje bir ürün. Her birinin kendi sayfası var.",
+      tr: "Her proje bir ürün. Her birinin ayrı sayfası var.",
     } as Bi,
     pageSub: {
       en: "Four products, built end-to-end — designed, coded, shipped.",
-      tr: "Dört ürün, uçtan uca — tasarlandı, kodlandı, yayına alındı.",
+      tr: "Dört ürün, baştan sona — tasarımı da kodu da yayını da bende.",
     } as Bi,
     seeAll: { en: "See all", tr: "Tümünü gör" } as Bi,
     learn: { en: "Learn more", tr: "İncele" } as Bi,
     view: { en: "View", tr: "Görüntüle" } as Bi,
     live: { en: "Live", tr: "Canlı" } as Bi,
     visit: { en: "Visit site", tr: "Siteye git" } as Bi,
-    back: { en: "Back home", tr: "Ana sayfa" } as Bi,
+    back: { en: "Back home", tr: "Ana sayfaya dön" } as Bi,
     next: { en: "Next project", tr: "Sonraki proje" } as Bi,
-    seeWork: { en: "See the work", tr: "İşlere bak" } as Bi,
+    seeWork: { en: "See the work", tr: "İşlere göz at" } as Bi,
   },
 
   stack: {
     title: { en: "The stack.", tr: "Teknoloji." } as Bi,
     sub: {
       en: "One standard: production-grade.",
-      tr: "Tek standart: production seviyesi.",
+      tr: "Tek ölçüt: production'a çıkabilmek.",
     } as Bi,
     dailyLabel: { en: "DAILY DRIVERS", tr: "HER GÜN KULLANDIKLARIM" } as Bi,
     arsenalLabel: { en: "FULL ARSENAL", tr: "TÜM ARAÇLAR" } as Bi,
@@ -68,32 +68,32 @@ export const site = {
         name: "Rust",
         note: {
           en: "Systems-level performance where it counts — Xaron is fifteen crates of it.",
-          tr: "Gerektiği yerde sistem seviyesi performans — Xaron'un tamamı, on beş crate.",
+          tr: "Gereken yerde sistem seviyesi performans — Xaron'un tamamı, on beş crate.",
         } as Bi,
       },
       {
         name: "TypeScript",
-        note: { en: "The default for everything else.", tr: "Geri kalan her şeyin varsayılanı." } as Bi,
+        note: { en: "The default for everything else.", tr: "Geri kalan her şeyde varsayılanım." } as Bi,
       },
       {
         name: "Next.js",
-        note: { en: "Production web apps, front to back.", tr: "Uçtan uca production web uygulamaları." } as Bi,
+        note: { en: "Production web apps, front to back.", tr: "Baştan sona production web uygulaması." } as Bi,
       },
       {
         name: "React Native",
-        note: { en: "Mobile that ships to both stores — with Expo.", tr: "İki mağazaya da çıkan mobil — Expo ile." } as Bi,
+        note: { en: "Mobile that ships to both stores — with Expo.", tr: "Expo ile iki mağazaya da çıkan mobil." } as Bi,
       },
       {
         name: "Node.js",
-        note: { en: "APIs, services, realtime backends.", tr: "API'ler, servisler, realtime backend'ler." } as Bi,
+        note: { en: "APIs, services, realtime backends.", tr: "API, servis, gerçek zamanlı backend." } as Bi,
       },
       {
         name: "PostgreSQL",
-        note: { en: "The source of truth.", tr: "Tek doğruluk kaynağı." } as Bi,
+        note: { en: "The source of truth.", tr: "Verinin tek doğru adresi." } as Bi,
       },
       {
         name: "Docker",
-        note: { en: "Isolated sandboxes and reproducible builds.", tr: "İzole sandbox'lar ve tekrarlanabilir build'ler." } as Bi,
+        note: { en: "Isolated sandboxes and reproducible builds.", tr: "İzole sandbox, her seferinde aynı build." } as Bi,
       },
     ],
 
@@ -117,15 +117,15 @@ export const site = {
     title: { en: "About.", tr: "Hakkımda." } as Bi,
     heading: {
       en: "I build hard things, and I ship them.",
-      tr: "Zor şeyler inşa ediyorum ve yayına alıyorum.",
+      tr: "Zor işlere girişiyorum. Ve bitiriyorum.",
     } as Bi,
     intro: {
       en: "I'm Doğan Aykaç — 23, from Türkiye. I started at 11, teaching myself on webmaster forums, and never stopped. Twelve years in, my work has moved from client sites to systems that are genuinely difficult: autonomous agent fleets, end-to-end encryption, escrow payments, retail automation.",
-      tr: "Ben Doğan Aykaç — 23 yaşında, Türkiye'den. 11 yaşımda webmaster forumlarında kendi kendime öğrenerek başladım ve hiç durmadım. On iki yıl içinde işim müşteri sitelerinden gerçekten zor sistemlere taşındı: otonom ajan filoları, uçtan uca şifreleme, escrow ödemeler, perakende otomasyonu.",
+      tr: "Ben Doğan Aykaç, 23 yaşındayım. 11 yaşımda webmaster forumlarında kendi kendime öğrenerek başladım, o gün bugün hiç ara vermedim. On iki yılda müşteri sitelerinden gerçekten çetin sistemlere geçtim: otonom ajan filoları, uçtan uca şifreleme, escrow ödemeler, perakende otomasyonu.",
     } as Bi,
     intro2: {
       en: "I design and build both sides. Every product on this site — the interface, the design system, the backend, the database — came from one person. That's not a boast; it's why I care about systems that hold up without a team to babysit them.",
-      tr: "İki tarafı da tasarlayıp geliştiriyorum. Bu sitedeki her ürün — arayüz, design system, backend, veritabanı — tek kişiden çıktı. Bu bir övünme değil; başında bir ekip beklemeden ayakta kalan sistemleri bu yüzden önemsiyorum.",
+      tr: "Hem tasarlıyorum hem yazıyorum. Bu sitedeki her ürünün arayüzü, design system'i, backend'i ve veritabanı tek kişiden çıktı. Övünmek için söylemiyorum: başında birinin beklemesine gerek kalmadan çalışan sistemleri bu yüzden önemsiyorum.",
     } as Bi,
 
     howLabel: { en: "HOW I WORK", tr: "NASIL ÇALIŞIYORUM" } as Bi,
@@ -134,21 +134,21 @@ export const site = {
         title: { en: "Design first, always.", tr: "Önce tasarım, her zaman." } as Bi,
         body: {
           en: "Every project starts with a design system — tokens, type scale, rules about what colour is allowed to mean. Then the code follows it.",
-          tr: "Her proje bir design system ile başlar — token'lar, tipografi ölçeği, hangi rengin ne anlama gelebileceğinin kuralları. Kod sonra onu takip eder.",
+          tr: "Her proje design system'le başlar: token'lar, tipografi ölçeği, hangi rengin neyi anlattığına dair kurallar. Kod sonra onu takip eder.",
         } as Bi,
       },
       {
         title: { en: "End to end, on purpose.", tr: "Uçtan uca, bilinçli olarak." } as Bi,
         body: {
           en: "Mobile, web, API, database, payments, deployment. Owning the whole stack means the seams get designed instead of discovered.",
-          tr: "Mobil, web, API, veritabanı, ödeme, deployment. Tüm stack'in sende olması, ek yerlerinin sonradan keşfedilmek yerine tasarlanması demek.",
+          tr: "Mobil, web, API, veritabanı, ödeme, deployment. Hepsi sendeyse ek yerleri sonradan başına dert olmaz; baştan tasarlanmış olur.",
         } as Bi,
       },
       {
         title: { en: "Trust is a feature.", tr: "Güven bir özelliktir." } as Bi,
         body: {
           en: "Encrypted DMs, escrow, passport data, row-level isolation. When the product handles something people can't afford to lose, security is the design.",
-          tr: "Şifreli mesajlar, escrow, pasaport verisi, satır seviyesi izolasyon. Ürün insanların kaybetmeyi göze alamayacağı bir şeyi taşıyorsa, güvenlik tasarımın kendisidir.",
+          tr: "Şifreli mesaj, escrow, pasaport verisi, satır seviyesi izolasyon. Ürün insanın kaybetmeyi göze alamayacağı bir şeyi taşıyorsa güvenlik ayrı bir madde değil, tasarımın kendisidir.",
         } as Bi,
       },
     ],
@@ -160,7 +160,7 @@ export const site = {
         title: { en: "Started at 11", tr: "11 yaşında başladım" } as Bi,
         note: {
           en: "Webmaster forums — HTML, hosting, and a lot of breaking things.",
-          tr: "Webmaster forumları — HTML, hosting ve bol bol bir şeyleri bozmak.",
+          tr: "Webmaster forumları: HTML, hosting ve bol bol bir şeyleri bozup düzeltmek.",
         } as Bi,
       },
       {
@@ -168,7 +168,7 @@ export const site = {
         title: { en: "First freelance project", tr: "İlk freelance proje" } as Bi,
         note: {
           en: "At 17 — client sites, small tools, learning by shipping.",
-          tr: "17 yaşında — müşteri siteleri, küçük araçlar, yayına alarak öğrenmek.",
+          tr: "17 yaşında: müşteri siteleri, küçük araçlar. Yayına alarak öğrendim.",
         } as Bi,
       },
       {
@@ -176,7 +176,7 @@ export const site = {
         title: { en: "Went professional", tr: "Profesyonelleştim" } as Bi,
         note: {
           en: "Full product work: mobile apps, APIs, databases, real users.",
-          tr: "Tam ürün işi: mobil uygulamalar, API'ler, veritabanları, gerçek kullanıcılar.",
+          tr: "Artık tam ürün işi: mobil uygulama, API, veritabanı ve gerçek kullanıcılar.",
         } as Bi,
       },
       {
@@ -184,7 +184,7 @@ export const site = {
         title: { en: "TECK · retail automation", tr: "TECK · perakende otomasyonu" } as Bi,
         note: {
           en: "Barcode stock app, online storefront and admin panel, end to end.",
-          tr: "Barkodlu stok uygulaması, online mağaza ve yönetim paneli, uçtan uca.",
+          tr: "Barkodlu stok uygulaması, online mağaza ve yönetim paneli — baştan sona.",
         } as Bi,
       },
       {
@@ -200,7 +200,7 @@ export const site = {
         title: { en: "Open to full-time roles", tr: "Full-time rollere açık" } as Bi,
         note: {
           en: "Looking for a team where craft and shipping both matter.",
-          tr: "Zanaatin ve yayına almanın birlikte önemsendiği bir ekip arıyorum.",
+          tr: "İşin kalitesini de yayına almayı da önemseyen bir ekip arıyorum.",
         } as Bi,
       },
     ],
@@ -208,7 +208,7 @@ export const site = {
     lookingLabel: { en: "WHAT I'M LOOKING FOR", tr: "NE ARIYORUM" } as Bi,
     looking: {
       en: "A full-time team building something technically real — agents, infrastructure, fintech, developer tools. Somewhere the bar for craft is high and shipping still matters.",
-      tr: "Teknik olarak gerçek bir şey inşa eden, full-time bir ekip — ajanlar, altyapı, fintech, geliştirici araçları. Zanaat çıtasının yüksek olduğu ve yayına almanın hâlâ önemsendiği bir yer.",
+      tr: "Teknik olarak gerçek bir şey yapan, full-time bir ekip: ajanlar, altyapı, fintech, geliştirici araçları. Çıtanın yüksek olduğu ama işin yine de yayına çıktığı bir yer.",
     } as Bi,
 
     detailsLabel: { en: "DETAILS", tr: "DETAYLAR" } as Bi,
@@ -225,7 +225,7 @@ export const site = {
         k: { en: "Remote", tr: "Remote" } as Bi,
         v: {
           en: "Yes — remote-ready, open to relocation",
-          tr: "Evet — remote'a hazır, taşınmaya açık",
+          tr: "Evet — remote çalışırım, taşınmaya da açığım",
         } as Bi,
       },
       {
@@ -240,7 +240,7 @@ export const site = {
     title: { en: "Let's talk.", tr: "Konuşalım." } as Bi,
     sub: {
       en: "Looking for someone who ships? Say hi.",
-      tr: "Yayına alan birini mi arıyorsun? Merhaba de.",
+      tr: "İşi bitiren birini mi arıyorsun? Bir merhaba yeter.",
     } as Bi,
   },
 

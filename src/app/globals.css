@@ -461,3 +461,30 @@ html.js-ready .reveal.in { opacity: 1; transform: none; }
   .cv-contact a, .cv-foot a { color: #1c1c1e; }
   @page { margin: 14mm; }
 }
+
+/* ---- case-study meta block + deep dives ---- */
+.proj-meta {
+  max-width: var(--maxw); margin: 0 auto; padding: 0;
+  display: grid; grid-template-columns: repeat(5, 1fr); gap: 18px;
+  border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); padding: 20px 0;
+}
+.proj-meta dt { font-size: 10.5px; font-weight: 600; letter-spacing: 0.09em; color: var(--muted); text-transform: uppercase; }
+.proj-meta dd { margin: 4px 0 0; font-size: 13px; line-height: 1.4; }
+.deep .section-lab { max-width: var(--maxw); margin: 0 auto 16px; }
+.deep-quote {
+  font-size: clamp(19px, 2.6vw, 26px); line-height: 1.4; font-weight: 500;
+  border-left: 3px solid; padding-left: 20px; margin: 0 0 30px; max-width: 760px;
+}
+.proj-theme.serif .deep-quote { font-family: var(--font-serif), Georgia, serif; font-style: italic; }
+.deep-cols { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+.deep-tags { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 14px; }
+.deep-tags code {
+  font-family: var(--font-mono), monospace; font-size: 10.5px;
+  background: color-mix(in srgb, var(--text) 7%, transparent);
+  border: 1px solid var(--line); border-radius: 6px; padding: 3px 8px; color: var(--muted);
+}
+@media (max-width: 900px) {
+  .proj-meta { grid-template-columns: repeat(2, 1fr); }
+  .deep-cols { grid-template-columns: 1fr; }
+}
+@media (max-width: 560px) { .proj-meta { grid-template-columns: 1fr; } }
