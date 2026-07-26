@@ -20,7 +20,7 @@ export async function generateMetadata({
     title,
     description: site.work.pageSub[lang],
     alternates: metaAlternates(lang, "/work"),
-    openGraph: { title, description: site.work.pageSub[lang] },
+    openGraph: { title, description: site.work.pageSub[lang], images: ["/og/work.jpg"] },
   };
 }
 

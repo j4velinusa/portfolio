@@ -23,7 +23,7 @@ export async function generateMetadata({
     title,
     description,
     alternates: metaAlternates(lang, "/stack"),
-    openGraph: { title, description },
+    openGraph: { title, description, images: ["/og/stack.jpg"] },
   };
 }
 

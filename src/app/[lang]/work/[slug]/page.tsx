@@ -37,7 +37,7 @@ export async function generateMetadata({
     title,
     description: p.blurb[lang],
     alternates: metaAlternates(lang, `/work/${slug}`),
-    openGraph: { title, description: p.blurb[lang], type: "article" },
+    openGraph: { title, description: p.blurb[lang], type: "article", images: [`/og/${slug}.jpg`] },
   };
 }
 

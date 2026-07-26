@@ -2,7 +2,7 @@ import type { MetadataRoute } from "next";
 import { SITE_URL } from "@/lib/i18n";
 import { projects } from "@/content/projects";
 
-const PAGES = ["", "/work", "/stack", "/about"];
+const PAGES = ["", "/work", "/stack", "/about", "/cv"];
 
 export default function sitemap(): MetadataRoute.Sitemap {
   const paths = [...PAGES, ...projects.map((p) => `/work/${p.slug}`)];

@@ -9,6 +9,7 @@ export const site = {
     stack: { en: "Stack", tr: "Teknoloji" } as Bi,
     about: { en: "About", tr: "Hakkımda" } as Bi,
     contact: { en: "Contact", tr: "İletişim" } as Bi,
+    cv: { en: "CV", tr: "CV" } as Bi,
   },
 
   hero: {
@@ -29,7 +30,7 @@ export const site = {
     talk: { en: "Let's talk.", tr: "Konuşalım." } as Bi,
     location: { en: "İstanbul, TR", tr: "İstanbul, TR" } as Bi,
     locationSub: { en: "UTC+3 · remote-ready", tr: "UTC+3 · remote'a hazır" } as Bi,
-    tags: ["TypeScript", "React Native", "Next.js", "Node.js", "Docker", "PostgreSQL"],
+    tags: ["Rust", "TypeScript", "Next.js", "React Native", "Docker", "PostgreSQL"],
   },
 
   work: {
@@ -64,8 +65,15 @@ export const site = {
 
     daily: [
       {
+        name: "Rust",
+        note: {
+          en: "Systems-level performance where it counts — Xaron is fifteen crates of it.",
+          tr: "Gerektiği yerde sistem seviyesi performans — Xaron'un tamamı, on beş crate.",
+        } as Bi,
+      },
+      {
         name: "TypeScript",
-        note: { en: "The default for everything.", tr: "Her şeyin varsayılanı." } as Bi,
+        note: { en: "The default for everything else.", tr: "Geri kalan her şeyin varsayılanı." } as Bi,
       },
       {
         name: "Next.js",
@@ -90,17 +98,17 @@ export const site = {
     ],
 
     groups: [
-      { label: { en: "LANGUAGES", tr: "DİLLER" } as Bi, items: ["TypeScript", "JavaScript", "SQL"] },
-      { label: { en: "FRONTEND", tr: "FRONTEND" } as Bi, items: ["React", "Next.js", "React Native", "Expo"] },
-      { label: { en: "BACKEND", tr: "BACKEND" } as Bi, items: ["Node.js", "Express.js", "REST API", "Docker"] },
-      { label: { en: "DATA", tr: "VERİ" } as Bi, items: ["PostgreSQL", "Supabase", "Firebase", "Oracle DB"] },
-      { label: { en: "CLOUD & TOOLS", tr: "BULUT & ARAÇLAR" } as Bi, items: ["AWS", "Google Cloud", "Git", "GitHub"] },
+      { label: { en: "LANGUAGES", tr: "DİLLER" } as Bi, items: ["Rust", "TypeScript", "JavaScript", "SQL"] },
+      { label: { en: "FRONTEND", tr: "FRONTEND" } as Bi, items: ["React", "Next.js 15", "React Native", "Expo", "Leptos (WASM)"] },
+      { label: { en: "BACKEND & INFRA", tr: "BACKEND & ALTYAPI" } as Bi, items: ["Node.js", "Axum", "BullMQ", "WebTransport/QUIC", "Docker"] },
+      { label: { en: "DATA", tr: "VERİ" } as Bi, items: ["PostgreSQL (RLS, pgvector)", "Supabase", "ScyllaDB", "Drizzle", "sqlx"] },
+      { label: { en: "PAYMENTS & SECURITY", tr: "ÖDEME & GÜVENLİK" } as Bi, items: ["Stripe Connect", "OpenMLS (RFC 9420)", "KYC", "GDPR / KVKK"] },
     ],
 
     wild: [
-      { slug: "dravion", tech: "Next.js · Node.js · Docker · PostgreSQL · TypeScript" },
-      { slug: "xaron", tech: "Next.js · WebRTC · PostgreSQL · E2E encryption" },
-      { slug: "sperare", tech: "React Native · Expo · Supabase · Stripe Connect" },
+      { slug: "dravion", tech: "Next.js 15 · PostgreSQL + pgvector · BullMQ + Redis · Docker · OpenTelemetry" },
+      { slug: "xaron", tech: "Rust · Axum · Leptos/WASM · OpenMLS · WebTransport · ScyllaDB" },
+      { slug: "sperare", tech: "React Native · Expo SDK 56 · Supabase (RLS) · Stripe Connect" },
       { slug: "teck", tech: "React Native · Expo · Node.js · PostgreSQL" },
     ],
   },

@@ -74,7 +74,7 @@ export const projects: Project[] = [
         "Fikir → sorular → yol haritası → worker'lar → diff → yayına hazır",
       ],
     },
-    tech: ["Multi-agent", "Docker sandboxes", "Next.js", "Node.js", "PostgreSQL", "TypeScript"],
+    tech: ["Next.js 15", "TypeScript", "PostgreSQL + pgvector", "Drizzle", "BullMQ + Redis", "Docker", "OpenTelemetry"],
     mockup: "dravion",
     features: [
       {
@@ -146,7 +146,7 @@ export const projects: Project[] = [
       { value: "1%", label: { en: "flat commission", tr: "sabit komisyon" } },
       { value: "0", label: { en: "ads, forever", tr: "reklam, sonsuza dek" } },
     ],
-    tech: ["End-to-end encryption", "Real-time voice & video", "Creator payments", "React"],
+    tech: ["Rust", "Axum", "Leptos/WASM", "OpenMLS (RFC 9420)", "WebTransport/QUIC", "ScyllaDB", "LiveKit"],
     liveUrl: "https://xaron.co",
     mockup: "xaron",
     features: [
@@ -218,7 +218,7 @@ export const projects: Project[] = [
         "Danışan uygulaması ve danışman CRM'i tek sistem",
       ],
     },
-    tech: ["React Native", "Supabase", "Postgres & RLS", "Stripe Connect", "KYC"],
+    tech: ["React Native", "Expo SDK 56", "Supabase (Postgres, RLS)", "Stripe Connect", "KYC"],
     mockup: "sperare",
     features: [
       {

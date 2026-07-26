@@ -396,3 +396,68 @@ html.js-ready .reveal.in { opacity: 1; transform: none; }
 .proj-h1 { max-width: 15ch; margin-left: auto; margin-right: auto; }
 .proj-theme.serif .proj-h1 { max-width: 17ch; }
 @media (max-width: 900px) { .proj-h1, .proj-theme.serif .proj-h1 { max-width: none; } }
+
+/* ============================================================
+   CV page — a light, print-first sheet. Deliberately not the
+   dark site chrome: recruiters print this or save it as PDF.
+   ============================================================ */
+.cv-page { background: #e9e9ec; min-height: 100vh; padding: 24px 20px 64px; }
+.cv-bar {
+  max-width: 860px; margin: 0 auto 18px;
+  display: flex; justify-content: space-between; align-items: center;
+}
+.cv-bar a { color: #55555c; }
+.cv-lang, .cv-print {
+  font: inherit; font-size: 12px; font-weight: 600; cursor: pointer;
+  border: 1px solid rgba(0, 0, 0, 0.18); border-radius: 980px;
+  padding: 6px 14px; background: #fff; color: #1c1c1e;
+}
+.cv-print:hover, .cv-lang:hover { background: #1c1c1e; color: #fff; border-color: #1c1c1e; }
+
+.cv-sheet {
+  max-width: 860px; margin: 0 auto; background: #fff; color: #1c1c1e;
+  border-radius: 6px; box-shadow: 0 10px 40px rgba(0, 0, 0, 0.14);
+  padding: 54px 60px 44px; font-size: 13px; line-height: 1.55;
+}
+.cv-head { display: flex; justify-content: space-between; align-items: flex-start; gap: 28px; border-bottom: 2px solid #1c1c1e; padding-bottom: 12px; }
+.cv-head h1 { font-size: 27px; font-weight: 700; letter-spacing: -0.02em; }
+.cv-role { font-size: 13px; color: #55555c; margin-top: 2px; }
+.cv-contact { display: flex; flex-direction: column; align-items: flex-end; gap: 1px; font-size: 11.5px; text-align: right; }
+.cv-contact a { color: #1f6feb; }
+.cv-contact span { color: #55555c; }
+.cv-summary { margin-top: 16px; font-size: 12.5px; color: #33333a; }
+.cv-lab { font-size: 10px; font-weight: 700; letter-spacing: 0.11em; color: #8a8a92; margin: 22px 0 8px; }
+.cv-job { margin-bottom: 11px; break-inside: avoid; }
+.cv-job-head { display: flex; justify-content: space-between; align-items: baseline; gap: 16px; }
+.cv-job-head strong { font-size: 13.5px; }
+.cv-job-role { color: #33333a; }
+.cv-dates { font-size: 11px; color: #8a8a92; white-space: nowrap; }
+.cv-note { font-size: 12px; color: #46464e; margin-top: 1px; }
+.cv-stack { font-size: 11px; color: #8a8a92; margin-top: 3px; }
+.cv-skills { margin: 0; display: flex; flex-direction: column; gap: 4px; }
+.cv-skill-row { display: grid; grid-template-columns: 132px 1fr; gap: 12px; align-items: baseline; }
+.cv-skill-row dt { font-size: 11.5px; color: #55555c; }
+.cv-skill-row dd { margin: 0; font-size: 12px; }
+.cv-foot {
+  display: flex; justify-content: space-between; gap: 16px; flex-wrap: wrap;
+  margin-top: 26px; padding-top: 12px; border-top: 1px solid rgba(0, 0, 0, 0.12);
+  font-size: 11px; color: #8a8a92;
+}
+.cv-foot a { color: #1f6feb; }
+
+@media (max-width: 720px) {
+  .cv-sheet { padding: 32px 24px; }
+  .cv-head { flex-direction: column; gap: 12px; }
+  .cv-contact { align-items: flex-start; text-align: left; }
+  .cv-job-head { flex-direction: column; gap: 1px; }
+  .cv-skill-row { grid-template-columns: 1fr; gap: 1px; }
+}
+
+/* Printing gives a clean A4 sheet: no chrome, no shadow, no wasted margin. */
+@media print {
+  .cv-page { background: #fff; padding: 0; }
+  .cv-bar { display: none; }
+  .cv-sheet { box-shadow: none; border-radius: 0; max-width: none; padding: 0; font-size: 10.5pt; }
+  .cv-contact a, .cv-foot a { color: #1c1c1e; }
+  @page { margin: 14mm; }
+}
