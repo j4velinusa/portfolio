@@ -26,7 +26,7 @@ body {
   margin: 0;
   background: var(--bg);
   color: var(--text);
-  font-family: var(--font-geist-sans), -apple-system, BlinkMacSystemFont, "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-family: var(--font-sans), -apple-system, BlinkMacSystemFont, "Helvetica Neue", Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
   text-rendering: optimizeLegibility;
 }
@@ -114,7 +114,7 @@ html.js-ready .reveal.in { opacity: 1; transform: none; }
   color: var(--text); position: relative;
 }
 .tile.photo { grid-row: span 2; padding: 0; }
-.tile.photo img { width: 100%; height: 100%; object-fit: cover; filter: grayscale(1); }
+.tile.photo img { width: 100%; height: 100%; object-fit: cover; }
 .tile.wide { grid-column: span 2; }
 .tile .big { font-size: 34px; font-weight: 700; letter-spacing: -0.02em; }
 .tile .small { font-size: 13px; color: var(--muted); margin-top: 3px; }
@@ -196,7 +196,7 @@ html.js-ready .reveal.in { opacity: 1; transform: none; }
 /* dravion terminal mockup */
 .terminal {
   background: linear-gradient(180deg, #101014, #0b0b0e); border: 1px solid var(--line);
-  border-radius: 22px; padding: 30px; font-family: var(--font-geist-mono), ui-monospace, Menlo, monospace;
+  border-radius: 22px; padding: 30px; font-family: var(--font-mono), ui-monospace, Menlo, monospace;
   font-size: 13px; line-height: 1.9; max-width: 780px; margin: 0 auto;
 }
 .terminal .dots { display: flex; gap: 7px; margin-bottom: 20px; }
@@ -214,7 +214,7 @@ html.js-ready .reveal.in { opacity: 1; transform: none; }
 .phone .notch { width: 90px; height: 5px; background: #2a2a2e; border-radius: 3px; margin: 0 auto 26px; }
 .barcode { display: flex; justify-content: center; gap: 3px; align-items: flex-end; height: 56px; margin-bottom: 16px; }
 .barcode span { background: var(--text); }
-.phone .code { font-family: var(--font-geist-mono), monospace; font-size: 12px; color: var(--muted); }
+.phone .code { font-family: var(--font-mono), monospace; font-size: 12px; color: var(--muted); }
 .phone .row { background: var(--surface2); border: 1px solid var(--line); border-radius: 14px; padding: 14px; margin-top: 18px; text-align: left; }
 .phone .row .p { font-size: 13px; font-weight: 600; }
 .phone .row .ok { font-size: 12px; color: var(--green); margin-top: 4px; }
@@ -235,3 +235,164 @@ html.js-ready .reveal.in { opacity: 1; transform: none; }
   .timeline { flex-direction: column; gap: 14px; }
   .nav-links a:not(.nav-cta) { display: none; }
 }
+
+/* ============================================================
+   Scroll-driven reveal — composited, runs off the main thread.
+   Content ships visible; the animation only applies where the
+   feature exists, so the ~16% of browsers without it (Firefox
+   stable) simply see static content.
+   ============================================================ */
+@supports (animation-timeline: view()) {
+  html.js-ready .reveal { opacity: 1; transform: none; }
+  @media (prefers-reduced-motion: no-preference) {
+    .reveal {
+      animation: reveal-in linear both;
+      animation-timeline: view();
+      animation-range: entry 5% cover 22%;
+    }
+  }
+}
+@keyframes reveal-in {
+  from { opacity: 0; transform: translateY(28px); }
+  to   { opacity: 1; transform: none; }
+}
+
+/* language switcher (now real links) */
+.lang a {
+  color: var(--muted); padding: 5px 11px; font-size: 11px; font-weight: 600;
+  transition: background 0.2s, color 0.2s;
+}
+.lang a.on { background: var(--text); color: #000; }
+.lang a:hover:not(.on) { color: var(--text); }
+
+/* shared small bits */
+.section-lab { font-size: 11px; font-weight: 600; color: var(--dim); letter-spacing: 0.09em; margin-bottom: 16px; }
+.dot-sm { width: 7px; height: 7px; border-radius: 50%; display: inline-block; margin-right: 7px; }
+.legend { display: flex; justify-content: center; gap: 22px; flex-wrap: wrap; font-size: 12.5px; color: var(--muted); }
+
+/* ---- Work page: alternating rows ---- */
+.work-row {
+  position: relative; overflow: hidden;
+  display: grid; grid-template-columns: 1.15fr 0.85fr; gap: 40px; align-items: center;
+  background: linear-gradient(180deg, #101014, #0c0c10);
+  border: 1px solid var(--line); border-radius: 26px; padding: 44px;
+}
+.work-row.flip .work-row-text { order: 2; }
+.work-row.flip .work-row-visual { order: 1; }
+.work-row-text, .work-row-visual { position: relative; }
+.work-row .num { color: var(--faint); margin-right: 6px; }
+.bullets { list-style: none; padding: 0; margin: 18px 0 0; display: flex; flex-direction: column; gap: 7px; }
+.bullets li { font-size: 13.5px; color: var(--muted); line-height: 1.5; }
+.row-actions { display: flex; gap: 12px; align-items: center; margin-top: 24px; flex-wrap: wrap; }
+.pill-cta { font-size: 13px; padding: 10px 20px; }
+
+/* ---- Stack page ---- */
+.daily-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; }
+.daily { background: var(--surface2); border: 1px solid var(--line); border-radius: 20px; padding: 26px; }
+.daily .n { font-size: 21px; font-weight: 700; letter-spacing: -0.015em; }
+.daily .note { font-size: 13px; color: var(--muted); margin-top: 6px; line-height: 1.45; }
+.wild { background: var(--surface2); border: 1px solid var(--line); border-radius: 20px; overflow: hidden; }
+.wild-row {
+  display: grid; grid-template-columns: 150px 1fr 20px; gap: 14px; align-items: center;
+  padding: 16px 22px; border-bottom: 1px solid var(--line); transition: background 0.2s;
+}
+.wild-row:last-child { border-bottom: 0; }
+.wild-row:hover { background: rgba(255, 255, 255, 0.03); }
+.wild-name { font-size: 14px; font-weight: 600; display: flex; align-items: center; }
+.wild-tech { font-size: 12.5px; color: var(--muted); }
+.wild-go { text-align: right; font-size: 15px; }
+
+/* ---- About page ---- */
+.about-hero { display: grid; grid-template-columns: 320px 1fr; gap: 48px; align-items: start; }
+.about-photo { border-radius: 20px; overflow: hidden; background: var(--surface); }
+.about-photo img { width: 100%; height: auto; }
+.about-h1 { font-size: clamp(34px, 5.4vw, 56px); font-weight: 700; letter-spacing: -0.03em; line-height: 1.06; }
+.about-p { font-size: 17px; color: #d2d2d7; line-height: 1.6; margin-top: 22px; }
+.about-p.dim { color: var(--muted); font-size: 15.5px; }
+.tl { background: var(--surface2); border: 1px solid var(--line); border-radius: 20px; overflow: hidden; }
+.tl-row {
+  display: grid; grid-template-columns: 72px 220px 1fr; gap: 16px; align-items: baseline;
+  padding: 15px 22px; border-bottom: 1px solid var(--line);
+}
+.tl-row:last-child { border-bottom: 0; }
+.tl-y { font-family: var(--font-mono), monospace; font-size: 12px; color: var(--dim); }
+.tl-t { font-size: 14px; font-weight: 600; }
+.tl-n { font-size: 13px; color: var(--muted); line-height: 1.45; }
+.about-cols { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+.details { margin: 0; display: flex; flex-direction: column; gap: 10px; }
+.d-row { display: grid; grid-template-columns: 92px 1fr; gap: 12px; align-items: baseline; }
+.d-row dt { font-size: 12.5px; color: var(--dim); }
+.d-row dd { margin: 0; font-size: 13.5px; }
+
+/* ---- Project pages: per-product theme ---- */
+.proj-theme { background: var(--bg); color: var(--text); min-height: 100vh; }
+.proj-theme .nav { background: color-mix(in srgb, var(--bg) 78%, transparent); }
+.proj-theme .chip { border-color: var(--line2); color: var(--muted); }
+.proj-theme .feat { background: var(--surface2); }
+.proj-h1 {
+  font-size: clamp(38px, 6.4vw, 76px); font-weight: 700;
+  letter-spacing: -0.03em; line-height: 1.04; margin-top: 14px;
+}
+.proj-theme.serif .proj-h1,
+.proj-theme.serif .feat .t {
+  font-family: var(--font-serif), Georgia, serif;
+  font-weight: 600; letter-spacing: -0.015em;
+}
+.proj-theme.serif .proj-h1 { font-size: clamp(40px, 6.8vw, 82px); }
+
+/* ---- Work-page mockups ---- */
+.terminal.compact { padding: 22px; font-size: 12px; line-height: 1.75; max-width: none; }
+.stat-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.stat {
+  background: var(--surface2); border: 1px solid var(--line);
+  border-radius: 16px; padding: 20px; text-align: center;
+}
+.stat.lead { grid-column: span 2; }
+.stat .v { font-size: 30px; font-weight: 700; letter-spacing: -0.02em; }
+.stat .l { font-size: 11.5px; color: var(--muted); margin-top: 2px; }
+.checklist { background: var(--surface2); border: 1px solid var(--line); border-radius: 18px; overflow: hidden; }
+.checklist .row {
+  display: flex; align-items: center; gap: 11px; padding: 15px 20px;
+  border-bottom: 1px solid var(--line); font-size: 13.5px;
+}
+.checklist .row:last-child { border-bottom: 0; }
+.checklist .tick {
+  width: 19px; height: 19px; border-radius: 50%; flex: none;
+  border: 1.5px solid var(--line2); display: grid; place-items: center;
+  font-size: 11px; color: transparent;
+}
+.checklist .tick.on { background: #30d158; border-color: #30d158; color: #06280f; }
+.checklist .pending { color: var(--muted); }
+.barcode-card { background: var(--surface2); border: 1px solid var(--line); border-radius: 18px; padding: 26px; text-align: center; }
+.barcode-card .code { font-family: var(--font-mono), monospace; font-size: 12px; color: var(--muted); margin-top: 4px; }
+.barcode-card .ok { font-size: 12px; color: #30d158; margin-top: 12px; }
+.barcode-card .barcode span { background: currentColor; height: 52px; }
+
+/* ---- responsive additions ---- */
+@media (max-width: 900px) {
+  .work-row { grid-template-columns: 1fr; gap: 28px; padding: 32px 26px; }
+  .work-row.flip .work-row-text { order: 1; }
+  .work-row.flip .work-row-visual { order: 2; }
+  .daily-grid { grid-template-columns: repeat(2, 1fr); }
+  .about-hero { grid-template-columns: 1fr; gap: 28px; }
+  .about-photo { max-width: 300px; }
+  .about-cols { grid-template-columns: 1fr; }
+  .tl-row { grid-template-columns: 60px 1fr; }
+  .tl-n { grid-column: 2; }
+  .wild-row { grid-template-columns: 120px 1fr 16px; }
+}
+@media (max-width: 560px) {
+  .daily-grid { grid-template-columns: 1fr; }
+  .wild-row { grid-template-columns: 1fr; gap: 6px; }
+  .wild-go { display: none; }
+  .legend { gap: 14px; font-size: 12px; }
+}
+
+/* Standalone mockups on a project page are centred, not full-bleed */
+.proj-theme .barcode-card,
+.proj-theme .checklist,
+.proj-theme .stat-grid { max-width: 420px; margin: 0 auto; }
+.proj-theme .barcode-card .barcode span { background: var(--text); }
+.proj-h1 { max-width: 15ch; margin-left: auto; margin-right: auto; }
+.proj-theme.serif .proj-h1 { max-width: 17ch; }
+@media (max-width: 900px) { .proj-h1, .proj-theme.serif .proj-h1 { max-width: none; } }

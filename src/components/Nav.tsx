@@ -1,46 +1,48 @@
 "use client";
 
 import Link from "next/link";
-import { useLang } from "@/lib/i18n";
+import { usePathname } from "next/navigation";
+import { otherLang, type Lang } from "@/lib/i18n";
 import { site } from "@/content/site";
 
-export function LangSwitch() {
-  const { lang, setLang } = useLang();
-  return (
-    <div className="lang" role="group" aria-label="Language">
-      <button className={lang === "en" ? "on" : ""} onClick={() => setLang("en")} aria-pressed={lang === "en"}>
-        EN
-      </button>
-      <button className={lang === "tr" ? "on" : ""} onClick={() => setLang("tr")} aria-pressed={lang === "tr"}>
-        TR
-      </button>
-    </div>
-  );
-}
-
-export function Nav({ variant = "home" }: { variant?: "home" | "project" }) {
-  const { lang } = useLang();
+/**
+ * The language switcher is a real <a href> pointing at the same page in the other
+ * locale. A button that swapped state client-side would be invisible to crawlers:
+ * Google only follows <a> elements that have an href.
+ */
+export function Nav({ lang, variant = "home" }: { lang: Lang; variant?: "home" | "project" }) {
+  const pathname = usePathname() || `/${lang}`;
+  const other = otherLang(lang);
+  const rest = pathname.replace(/^\/(en|tr)(?=\/|$)/, "");
+  const home = `/${lang}`;
   const t = site.nav;
 
   return (
     <nav className="nav">
-      {variant === "home" ? (
-        <Link href="/" className="nav-brand">
-          {site.name}
-        </Link>
-      ) : (
-        <Link href="/" className="nav-brand" style={{ color: "var(--muted)", fontWeight: 400, fontSize: 13 }}>
-          ‹ {site.name}
-        </Link>
-      )}
+      <Link
+        href={home}
+        className="nav-brand"
+        style={variant === "project" ? { color: "var(--muted)", fontWeight: 400, fontSize: 13 } : undefined}
+      >
+        {variant === "project" ? `‹ ${site.name}` : site.name}
+      </Link>
+
       <div className="nav-links">
-        <a href="/#work">{t.work[lang]}</a>
-        <a href="/#stack">{t.stack[lang]}</a>
-        <a href="/#about">{t.about[lang]}</a>
-        <a href="/#contact" className="nav-cta">
+        <Link href={`${home}/work`}>{t.work[lang]}</Link>
+        <Link href={`${home}/stack`}>{t.stack[lang]}</Link>
+        <Link href={`${home}/about`}>{t.about[lang]}</Link>
+        <a href={`${home}#contact`} className="nav-cta">
           {t.contact[lang]}
         </a>
-        <LangSwitch />
+
+        <span className="lang" role="group" aria-label="Language">
+          <Link href={home} className="on" hrefLang={lang} aria-current="true">
+            {lang.toUpperCase()}
+          </Link>
+          <Link href={`/${other}${rest}`} hrefLang={other}>
+            {other.toUpperCase()}
+          </Link>
+        </span>
       </div>
     </nav>
   );

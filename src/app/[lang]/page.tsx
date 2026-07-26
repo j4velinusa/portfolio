@@ -1,22 +1,38 @@
-"use client";
-
 import Link from "next/link";
 import Image from "next/image";
-import { useLang } from "@/lib/i18n";
+import type { Metadata } from "next";
+import { notFound } from "next/navigation";
+import { isLang, metaAlternates, type Lang } from "@/lib/i18n";
 import { site } from "@/content/site";
 import { projects } from "@/content/projects";
 import { Nav } from "@/components/Nav";
 import { RevealProvider } from "@/components/Reveal";
+import { Contact } from "@/components/Contact";
+import { PersonJsonLd } from "@/components/JsonLd";
 
-export default function Home() {
-  const { lang } = useLang();
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ lang: string }>;
+}): Promise<Metadata> {
+  const { lang } = await params;
+  if (!isLang(lang)) return {};
+  return { alternates: metaAlternates(lang) };
+}
+
+export default async function Home({ params }: { params: Promise<{ lang: string }> }) {
+  const { lang: raw } = await params;
+  if (!isLang(raw)) notFound();
+  const lang: Lang = raw;
+
   const featured = projects.find((p) => p.slug === "xaron")!;
   const dravion = projects.find((p) => p.slug === "dravion")!;
 
   return (
     <>
+      <PersonJsonLd lang={lang} />
       <RevealProvider />
-      <Nav />
+      <Nav lang={lang} />
 
       <header className="hero" id="top">
         <span className="pill">
@@ -27,11 +43,17 @@ export default function Home() {
         <p className="sub">{site.hero.subtitle[lang]}</p>
       </header>
 
-      {/* bento */}
       <section className="section">
         <div className="bento">
           <div className="tile photo reveal">
-            <Image src="/dogan.png" alt={site.name} width={520} height={700} priority />
+            <Image
+              src="/dogan.png"
+              alt={site.name}
+              width={600}
+              height={600}
+              priority
+              sizes="(max-width: 560px) 100vw, 260px"
+            />
           </div>
 
           <div className="tile wide reveal" data-d="60">
@@ -40,10 +62,10 @@ export default function Home() {
           </div>
 
           <Link
-            href={`/work/${dravion.slug}`}
+            href={`/${lang}/work/${dravion.slug}`}
             className="tile reveal"
             data-d="120"
-            style={{ background: "linear-gradient(135deg,#ffb340,#ff6b00)", color: "#fff" }}
+            style={{ background: "linear-gradient(135deg,#e08b6a,#c2542c)", color: "#fff" }}
           >
             <div style={{ fontSize: 21, fontWeight: 700 }}>{dravion.name}</div>
             <div style={{ fontSize: 12, opacity: 0.9 }}>{dravion.category[lang]} ›</div>
@@ -57,21 +79,19 @@ export default function Home() {
             ))}
           </div>
 
-          <Link href={`/work/${featured.slug}`} className="tile wide reveal" data-d="150">
+          <Link href={`/${lang}/work/${featured.slug}`} className="tile wide reveal" data-d="150">
             <div
               className="glow"
-              style={{ background: "radial-gradient(ellipse at 100% 100%,rgba(169,114,255,.3),transparent 60%)" }}
+              style={{
+                background: "radial-gradient(ellipse at 100% 100%,oklch(0.68 0.16 274 / .32),transparent 60%)",
+              }}
             />
             <div style={{ position: "relative" }}>
               <div style={{ fontSize: 11.5, fontWeight: 600, color: featured.accent, letterSpacing: ".06em" }}>
                 {lang === "en" ? "FEATURED" : "ÖNE ÇIKAN"} · {featured.name}
               </div>
               <div style={{ fontSize: 20, fontWeight: 700, marginTop: 5 }}>{featured.tagline[lang]} ›</div>
-              <div className="small">
-                {lang === "en"
-                  ? "E2E encrypted. No ads. 1% flat commission."
-                  : "Uçtan uca şifreli. Reklam yok. %1 sabit komisyon."}
-              </div>
+              <div className="small">{featured.bullets[lang][0]}</div>
             </div>
           </Link>
 
@@ -96,14 +116,19 @@ export default function Home() {
       <section id="work" className="band" style={{ marginTop: 90 }}>
         <div className="container">
           <h2 className="h2 reveal">{site.work.title[lang]}</h2>
-          <p className="h2sub reveal">{site.work.sub[lang]}</p>
+          <p className="h2sub reveal">
+            {site.work.sub[lang]}{" "}
+            <Link href={`/${lang}/work`} style={{ color: "var(--text)", fontWeight: 500 }}>
+              {site.work.seeAll[lang]} ›
+            </Link>
+          </p>
           <div className="work-list">
             {projects.map((p, i) => (
-              <Link key={p.slug} href={`/work/${p.slug}`} className="work-card reveal">
+              <Link key={p.slug} href={`/${lang}/work/${p.slug}`} className="work-card reveal">
                 <div
                   className="glow"
                   style={{
-                    background: `radial-gradient(ellipse at ${i % 2 ? "15%" : "85%"} ${i < 2 ? "10%" : "90%"}, ${p.accent}26, transparent 55%)`,
+                    background: `radial-gradient(ellipse at ${i % 2 ? "15%" : "85%"} ${i < 2 ? "10%" : "90%"}, color-mix(in oklab, ${p.accent} 18%, transparent), transparent 55%)`,
                   }}
                 />
                 <div className="work-eyebrow" style={{ color: p.accent }}>
@@ -133,7 +158,12 @@ export default function Home() {
       <section id="stack" className="pad">
         <div className="container">
           <h2 className="h2 reveal">{site.stack.title[lang]}</h2>
-          <p className="h2sub reveal">{site.stack.sub[lang]}</p>
+          <p className="h2sub reveal">
+            {site.stack.sub[lang]}{" "}
+            <Link href={`/${lang}/stack`} style={{ color: "var(--text)", fontWeight: 500 }}>
+              {site.work.seeAll[lang]} ›
+            </Link>
+          </p>
         </div>
         <div className="section">
           <div className="stack-grid">
@@ -156,36 +186,17 @@ export default function Home() {
         <div className="container">
           <div className="about">
             <h2 className="h2 reveal">{site.about.title[lang]}</h2>
-            <p className="reveal">{site.about.body[lang]}</p>
-            <div className="timeline reveal">
-              {site.about.timeline.map((t) => (
-                <div key={t.y} className="col">
-                  <div className="y">{t.y}</div>
-                  <div className="d">{t.label[lang]}</div>
-                </div>
-              ))}
-            </div>
+            <p className="reveal">{site.about.intro[lang]}</p>
+            <p className="reveal" style={{ marginTop: 22 }}>
+              <Link href={`/${lang}/about`} style={{ color: "var(--blue)", fontSize: 16 }}>
+                {lang === "en" ? "More about me" : "Hakkımda daha fazlası"} ›
+              </Link>
+            </p>
           </div>
         </div>
       </section>
 
-      {/* contact */}
-      <footer id="contact" className="contact">
-        <h2 className="grad-text reveal">{site.contact.title[lang]}</h2>
-        <p className="sub reveal">{site.contact.sub[lang]}</p>
-        <div className="cbtns reveal">
-          <a className="btn solid" href={`mailto:${site.links.email}`}>
-            {site.links.email}
-          </a>
-          <a className="btn ghost" href={site.links.github} target="_blank" rel="noreferrer">
-            GitHub
-          </a>
-          <a className="btn ghost" href={site.links.linkedin} target="_blank" rel="noreferrer">
-            LinkedIn
-          </a>
-        </div>
-        <div className="copyright">© 2026 {site.name}</div>
-      </footer>
+      <Contact lang={lang} />
     </>
   );
 }
