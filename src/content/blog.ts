@@ -3,8 +3,8 @@ import type { Bi } from "@/lib/i18n";
 export const blog = {
   title: { en: "Notes.", tr: "Gündem." } as Bi,
   intro: {
-    en: "I follow what happens in the industry and write about it — agents, encryption, payment infrastructure, Rust. About one post a week: not a news roundup, but what it means. Written in Turkish.",
-    tr: "Sektörde olan biteni takip ediyorum ve üzerine yazıyorum — ajanlar, şifreleme, ödeme altyapısı, Rust. Haftada bir yazı; haber özeti değil, ne anlama geldiği üzerine yorum.",
+    en: "I follow what happens in the industry and write about it.",
+    tr: "Sektörde olan biteni takip ediyorum ve üzerine yazıyorum.",
   } as Bi,
   read: { en: "Read the post", tr: "Yazıyı oku" } as Bi,
   readSuffix: { en: "min read", tr: "dk okuma" } as Bi,
