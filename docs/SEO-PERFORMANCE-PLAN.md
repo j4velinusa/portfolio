@@ -1,5 +1,9 @@
 # SEO + Performans Planı
 
+> **DURUM (2026-07-26):** §2 mimari kararı, §3 P0'ın tamamı ve §4 P1'in 1-2-3-5-6
+> maddeleri **uygulandı** (commit `021b870`). Kalan: OG görselleri (P1/4), View
+> Transitions cilası (§5c), deploy (§7).
+
 Kaynak: 13 boyutlu araştırma (8 SEO + 5 performans), resmi dokümanlar üzerinden, 26 iddia
 çürütme turundan geçirildi (18'i "abartılı" çıkıp düzeltildi). Ölçümler bu repoda gerçek
 `next build` çıktısı ve dosya boyutlarından alındı. Tarih: 2026-07-26.
