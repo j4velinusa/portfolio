@@ -4,7 +4,7 @@ import { notFound } from "next/navigation";
 import { isLang, metaAlternates, SITE_URL, LANGS, type Lang } from "@/lib/i18n";
 import { site } from "@/content/site";
 import { blog } from "@/content/blog";
-import { getPost, getPosts, formatDate, renderMarkdown } from "@/lib/posts";
+import { getPost, getPosts, formatDate, renderMarkdown, coverFor } from "@/lib/posts";
 import { Nav } from "@/components/Nav";
 import { jsonLdSafe } from "@/components/JsonLd";
 import { RevealProvider } from "@/components/Reveal";
@@ -72,6 +72,7 @@ export default async function PostPage({
       <Nav lang={lang} variant="project" />
 
       <article className="blog-wrap post">
+        <div className="post-hero" style={{ background: coverFor(p.slug) }} aria-hidden="true" />
         <header>
           <div className="post-meta">
             <time dateTime={p.date}>{formatDate(p.date)}</time>

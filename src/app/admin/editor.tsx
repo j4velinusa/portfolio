@@ -14,6 +14,7 @@ type Draft = {
 
 const DRAFT_KEY = "da_admin_draft_v1";
 const EXCERPT_MAX = 200;
+const CATEGORIES = ["Ajanlar", "Şifreleme", "Transport", "Ödeme", "Rust", "Ürün", "Genel"];
 
 const emptyDraft = (): Draft => ({
   slug: "",
@@ -34,6 +35,13 @@ const slugify = (s: string) =>
     .replace(/^-+|-+$/g, "")
     .slice(0, 70);
 
+/** Same deterministic gradient the blog renders, so the preview is honest. */
+function coverFor(seed: string): string {
+  let h = 0;
+  for (let i = 0; i < seed.length; i++) h = (h * 31 + seed.charCodeAt(i)) % 360;
+  return `linear-gradient(135deg, oklch(0.62 0.17 ${h}), oklch(0.52 0.19 ${(h + 48) % 360}))`;
+}
+
 export function AdminEditor() {
   const [authed, setAuthed] = useState(false);
   const [password, setPassword] = useState("");
@@ -42,20 +50,9 @@ export function AdminEditor() {
   const [status, setStatus] = useState("");
   const [draft, setDraft] = useState<Draft>(emptyDraft);
   const [slugTouched, setSlugTouched] = useState(false);
-
-  /** Restore the local draft. Called on login rather than from an effect:
-   *  the draft is only needed once you are actually in the editor. */
-  function restoreDraft() {
-    try {
-      const raw = localStorage.getItem(DRAFT_KEY);
-      if (raw) {
-        setDraft({ ...emptyDraft(), ...JSON.parse(raw) });
-        setSlugTouched(true);
-      }
-    } catch {
-      /* a corrupt draft just starts you fresh */
-    }
-  }
+  const [posts, setPosts] = useState<Draft[]>([]);
+  const [editing, setEditing] = useState<string | null>(null);
+  const [query, setQuery] = useState("");
 
   useEffect(() => {
     const t = setTimeout(() => {
@@ -72,6 +69,33 @@ export function AdminEditor() {
 
   const words = useMemo(() => draft.body.trim().split(/\s+/).filter(Boolean).length, [draft.body]);
   const minutes = Math.max(1, Math.round(words / 200));
+  const shown = useMemo(() => {
+    const q = query.trim().toLocaleLowerCase("tr");
+    return q ? posts.filter((p) => p.title.toLocaleLowerCase("tr").includes(q)) : posts;
+  }, [posts, query]);
+
+  /** Restore the local draft on login rather than in an effect: it is only
+   *  needed once you are past the password. */
+  function restoreDraft() {
+    try {
+      const raw = localStorage.getItem(DRAFT_KEY);
+      if (raw) {
+        setDraft({ ...emptyDraft(), ...JSON.parse(raw) });
+        setSlugTouched(true);
+      }
+    } catch {
+      /* a corrupt draft just starts you fresh */
+    }
+  }
+
+  async function loadPosts() {
+    try {
+      const r = await fetch("/api/admin/posts", { cache: "no-store" });
+      if (r.ok) setPosts((await r.json()).posts ?? []);
+    } catch {
+      /* the list is a convenience; the editor still works without it */
+    }
+  }
 
   async function login(e: React.FormEvent) {
     e.preventDefault();
@@ -89,39 +113,7 @@ export function AdminEditor() {
         restoreDraft();
         setAuthed(true);
         setPassword("");
-      }
-    } catch {
-      setError("Sunucuya ulaşılamadı.");
-    } finally {
-      setBusy(false);
-    }
-  }
-
-  async function publish() {
-    setBusy(true);
-    setError("");
-    setStatus("");
-    try {
-      const r = await fetch("/api/admin/publish", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(draft),
-      });
-      const d = await r.json();
-      if (!r.ok) {
-        setError(d.error ?? "Yayınlanamadı.");
-        if (r.status === 401) setAuthed(false);
-      } else {
-        // The draft is now in git; leaving a copy in localStorage only widens
-        // the window for a future same-origin script to read it.
-        try {
-          localStorage.removeItem(DRAFT_KEY);
-        } catch {
-          /* nothing to clean up */
-        }
-        setStatus(
-          `${d.updated ? "Güncellendi" : "Yayınlandı"} · commit ${d.commit} — Vercel dağıtımı başladı, ~1 dk içinde canlıda.`,
-        );
+        loadPosts();
       }
     } catch {
       setError("Sunucuya ulaşılamadı.");
@@ -143,9 +135,81 @@ export function AdminEditor() {
     }
     setDraft(emptyDraft());
     setSlugTouched(false);
+    setPosts([]);
+    setEditing(null);
     setStatus("");
     setError("");
     setAuthed(false);
+  }
+
+  async function publish() {
+    setBusy(true);
+    setError("");
+    setStatus("");
+    try {
+      const r = await fetch("/api/admin/publish", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(draft),
+      });
+      const d = await r.json();
+      if (!r.ok) {
+        setError(d.error ?? "Yayınlanamadı.");
+        if (r.status === 401) setAuthed(false);
+      } else {
+        try {
+          localStorage.removeItem(DRAFT_KEY);
+        } catch {
+          /* nothing to clean up */
+        }
+        setStatus(
+          `${d.updated ? "Güncellendi" : "Yayınlandı"} · commit ${d.commit} — dağıtım başladı, ~1 dk içinde canlıda.`,
+        );
+        setEditing(draft.slug);
+        loadPosts();
+      }
+    } catch {
+      setError("Sunucuya ulaşılamadı.");
+    } finally {
+      setBusy(false);
+    }
+  }
+
+  async function remove(slug: string) {
+    if (!confirm(`"${slug}" kalıcı olarak silinsin mi?`)) return;
+    setBusy(true);
+    setError("");
+    setStatus("");
+    try {
+      const r = await fetch(`/api/admin/posts?slug=${encodeURIComponent(slug)}`, { method: "DELETE" });
+      const d = await r.json();
+      if (!r.ok) setError(d.error ?? "Silinemedi.");
+      else {
+        setStatus(`Silindi · commit ${d.commit}`);
+        if (editing === slug) newPost();
+        loadPosts();
+      }
+    } catch {
+      setError("Sunucuya ulaşılamadı.");
+    } finally {
+      setBusy(false);
+    }
+  }
+
+  function edit(p: Draft) {
+    setDraft({ ...p });
+    setEditing(p.slug);
+    setSlugTouched(true);
+    setStatus("");
+    setError("");
+  }
+
+  function newPost() {
+    setDraft(emptyDraft());
+    setEditing(null);
+    setSlugTouched(false);
+    setStatus("");
+    setError("");
   }
 
   function insert(before: string, after = "") {
@@ -190,7 +254,7 @@ export function AdminEditor() {
         <strong>Gündem paneli</strong>
         <div className="admin-actions">
           <span className="admin-note">
-            {words} kelime · ~{minutes} dk okuma · Markdown destekli
+            {words} kelime · ~{minutes} dk · Markdown
           </span>
           <a href="/tr/blog" target="_blank" rel="noreferrer" className="admin-ghost">
             Blogu aç
@@ -199,7 +263,7 @@ export function AdminEditor() {
             Çıkış
           </button>
           <button onClick={publish} disabled={busy} className="admin-primary">
-            {busy ? "Gönderiliyor…" : draft.published ? "Yayınla" : "Taslak olarak kaydet"}
+            {busy ? "Gönderiliyor…" : editing ? "Güncelle" : "Yayınla"}
           </button>
         </div>
       </header>
@@ -209,6 +273,37 @@ export function AdminEditor() {
       )}
 
       <div className="admin-grid">
+        <nav className="admin-list">
+          <button className="admin-ghost wide" onClick={newPost}>
+            + Yeni yazı
+          </button>
+          <input
+            className="admin-search"
+            value={query}
+            onChange={(e) => setQuery(e.target.value)}
+            placeholder="Yazı ara"
+          />
+          <div className="admin-count">
+            {posts.length} yazı{query ? ` · ${shown.length} eşleşme` : ""}
+          </div>
+
+          {shown.map((p) => (
+            <div key={p.slug} className={`admin-item${editing === p.slug ? " on" : ""}`}>
+              <button className="admin-item-main" onClick={() => edit(p)}>
+                <span className="t">{p.title}</span>
+                <span className="m">
+                  {p.date} · {p.category}
+                </span>
+              </button>
+              <button className="admin-del" onClick={() => remove(p.slug)} title="Sil" disabled={busy}>
+                ×
+              </button>
+            </div>
+          ))}
+
+          {posts.length === 0 && <p className="admin-count">Henüz yazı yok.</p>}
+        </nav>
+
         <main className="admin-main">
           <input
             className="admin-title"
@@ -229,6 +324,7 @@ export function AdminEditor() {
               }}
               placeholder="yazi-adresi"
             />
+            {editing ? <span className="admin-editing">düzenleniyor</span> : null}
           </div>
 
           <div className="admin-tools">
@@ -255,27 +351,26 @@ export function AdminEditor() {
           <div className="admin-block">
             <div className="admin-lab">YAYIN</div>
             <label>
-              Durum
-              <select
-                value={draft.published ? "yes" : "no"}
-                onChange={(e) => set("published", e.target.value === "yes")}
-              >
-                <option value="yes">Yayında</option>
-                <option value="no">Taslak</option>
-              </select>
-            </label>
-            <label>
               Tarih
               <input type="date" value={draft.date} onChange={(e) => set("date", e.target.value)} />
             </label>
             <label>
               Kategori
               <input
+                list="admin-cats"
                 value={draft.category}
                 onChange={(e) => set("category", e.target.value)}
                 placeholder="Ajanlar"
               />
             </label>
+            <datalist id="admin-cats">
+              {[...new Set([...CATEGORIES, ...posts.map((p) => p.category)])].map((c) => (
+                <option key={c} value={c} />
+              ))}
+            </datalist>
+            <p className="admin-count">
+              Taslak repoya yazılmaz — yayınlayana kadar bu tarayıcıda kalır.
+            </p>
           </div>
 
           <div className="admin-block">
@@ -295,23 +390,15 @@ export function AdminEditor() {
           <div className="admin-block">
             <div className="admin-lab">ÖNİZLEME</div>
             <div className="admin-preview">
+              <div
+                className="admin-cover"
+                style={{ background: coverFor(draft.slug || draft.title || "yazi") }}
+              />
               <div className="admin-preview-host">doganaykac.com</div>
               <div className="admin-preview-title">{draft.title || "Başlık"}</div>
               <div className="admin-preview-desc">{draft.excerpt || "Özet buraya gelecek."}</div>
             </div>
           </div>
-
-          <button
-            className="admin-ghost wide"
-            onClick={() => {
-              if (confirm("Taslağı temizleyip sıfırdan başlansın mı?")) {
-                setDraft(emptyDraft());
-                setSlugTouched(false);
-              }
-            }}
-          >
-            Yeni yazı
-          </button>
         </aside>
       </div>
     </div>

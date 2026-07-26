@@ -623,3 +623,49 @@ html.js-ready .reveal.in { opacity: 1; transform: none; }
 @media (max-width: 980px) {
   .admin-grid { grid-template-columns: 1fr; }
 }
+
+/* deterministic post covers */
+.post-row { position: relative; padding-left: 18px; }
+.post-cover {
+  position: absolute; left: 0; top: 30px; bottom: 30px; width: 4px;
+  border-radius: 980px; opacity: 0.9;
+}
+.post-hero { height: 6px; border-radius: 980px; margin-bottom: 30px; }
+
+/* admin: post list column */
+.admin-grid { grid-template-columns: 250px 1fr 300px; }
+.admin-list { display: flex; flex-direction: column; gap: 8px; }
+.admin-search {
+  font: inherit; font-size: 13px; background: var(--bg); color: var(--text);
+  border: 1px solid var(--line2); border-radius: 10px; padding: 8px 11px; width: 100%;
+}
+.admin-item {
+  display: flex; align-items: stretch; gap: 4px;
+  border: 1px solid var(--line); border-radius: 12px; overflow: hidden;
+  background: var(--surface2); transition: border-color 0.2s;
+}
+.admin-item.on { border-color: var(--blue); }
+.admin-item:hover { border-color: var(--line2); }
+.admin-item-main {
+  flex: 1; text-align: left; background: transparent; border: 0; cursor: pointer;
+  color: var(--text); font: inherit; padding: 11px 12px;
+  display: flex; flex-direction: column; gap: 3px; min-width: 0;
+}
+.admin-item-main .t { font-size: 13px; font-weight: 600; line-height: 1.35; }
+.admin-item-main .m { font-family: var(--font-mono), monospace; font-size: 10.5px; color: var(--dim); }
+.admin-del {
+  background: transparent; border: 0; border-left: 1px solid var(--line);
+  color: var(--dim); cursor: pointer; font-size: 17px; width: 34px; flex: none;
+}
+.admin-del:hover:not(:disabled) { background: rgba(255, 100, 130, 0.14); color: #ff6482; }
+.admin-editing {
+  font-family: var(--font-sans), sans-serif; font-size: 10.5px; font-weight: 600;
+  color: var(--blue); border: 1px solid color-mix(in srgb, var(--blue) 45%, transparent);
+  border-radius: 980px; padding: 2px 9px; margin-left: 8px;
+}
+.admin-cover { height: 40px; border-radius: 8px; margin-bottom: 10px; }
+
+@media (max-width: 1100px) {
+  .admin-grid { grid-template-columns: 1fr; }
+  .admin-list { order: 3; }
+}

@@ -4,7 +4,7 @@ import { notFound } from "next/navigation";
 import { isLang, metaAlternates, type Lang } from "@/lib/i18n";
 import { site } from "@/content/site";
 import { blog } from "@/content/blog";
-import { getPosts, formatDate } from "@/lib/posts";
+import { getPosts, formatDate, coverFor } from "@/lib/posts";
 import { Nav } from "@/components/Nav";
 import { RevealProvider } from "@/components/Reveal";
 
@@ -44,6 +44,7 @@ export default async function BlogIndex({ params }: { params: Promise<{ lang: st
         <div className="post-list">
           {posts.map((p) => (
             <article key={p.slug} className="post-row reveal">
+              <span className="post-cover" style={{ background: coverFor(p.slug) }} aria-hidden="true" />
               <div className="post-meta">
                 <time dateTime={p.date}>{formatDate(p.date)}</time>
                 <span className="post-cat">{p.category}</span>

@@ -95,6 +95,17 @@ export function formatDate(iso: string): string {
   return `${d} ${MONTHS_TR[m - 1]} ${y}`;
 }
 
+/**
+ * A deterministic cover for a post, derived from its slug — same input, same
+ * gradient, forever. Avoids asking the author to make an image for every post
+ * while still giving the list some colour to navigate by.
+ */
+export function coverFor(seed: string): string {
+  let h = 0;
+  for (let i = 0; i < seed.length; i++) h = (h * 31 + seed.charCodeAt(i)) % 360;
+  return `linear-gradient(135deg, oklch(0.62 0.17 ${h}), oklch(0.52 0.19 ${(h + 48) % 360}))`;
+}
+
 const escapeHtml = (s: string) =>
   s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
 
