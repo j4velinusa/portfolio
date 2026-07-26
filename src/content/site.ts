@@ -10,6 +10,7 @@ export const site = {
     about: { en: "About", tr: "Hakkımda" } as Bi,
     contact: { en: "Contact", tr: "İletişim" } as Bi,
     cv: { en: "CV", tr: "CV" } as Bi,
+    blog: { en: "Notes", tr: "Gündem" } as Bi,
   },
 
   hero: {

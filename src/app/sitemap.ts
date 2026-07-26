@@ -1,11 +1,16 @@
 import type { MetadataRoute } from "next";
 import { SITE_URL } from "@/lib/i18n";
 import { projects } from "@/content/projects";
+import { getPosts } from "@/lib/posts";
 
-const PAGES = ["", "/work", "/stack", "/about", "/cv"];
+const PAGES = ["", "/work", "/stack", "/about", "/cv", "/blog"];
 
 export default function sitemap(): MetadataRoute.Sitemap {
-  const paths = [...PAGES, ...projects.map((p) => `/work/${p.slug}`)];
+  const paths = [
+    ...PAGES,
+    ...projects.map((p) => `/work/${p.slug}`),
+    ...getPosts().map((p) => `/blog/${p.slug}`),
+  ];
 
   // One entry per locale, each declaring the full alternates set. Google reads
   // hreflang from the sitemap as well as from <link> tags.

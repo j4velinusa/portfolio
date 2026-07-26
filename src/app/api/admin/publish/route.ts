@@ -1,0 +1,124 @@
+import { NextResponse } from "next/server";
+import { cookies } from "next/headers";
+import { sessionIsValid, SESSION_COOKIE } from "@/lib/admin-auth";
+
+export const runtime = "nodejs";
+
+type Incoming = {
+  slug?: string;
+  title?: string;
+  category?: string;
+  date?: string;
+  excerpt?: string;
+  body?: string;
+  published?: boolean;
+};
+
+const REPO = process.env.GITHUB_REPO ?? "j4velinusa/portfolio";
+const BRANCH = process.env.GITHUB_BRANCH ?? "main";
+
+/** Slugs become file paths, so keep them to a safe, predictable shape. */
+const SLUG_RE = /^[a-z0-9]+(?:-[a-z0-9]+)*$/;
+
+const WORDS_PER_MINUTE = 200;
+
+export async function POST(req: Request) {
+  const token = process.env.GITHUB_TOKEN;
+  if (!process.env.ADMIN_PASSWORD || !token) {
+    return NextResponse.json(
+      { error: "Publishing is not configured (ADMIN_PASSWORD / GITHUB_TOKEN missing)." },
+      { status: 503 },
+    );
+  }
+
+  const jar = await cookies();
+  if (!sessionIsValid(jar.get(SESSION_COOKIE)?.value)) {
+    return NextResponse.json({ error: "Oturum geçersiz. Tekrar giriş yap." }, { status: 401 });
+  }
+
+  let p: Incoming;
+  try {
+    p = await req.json();
+  } catch {
+    return NextResponse.json({ error: "Bad request" }, { status: 400 });
+  }
+
+  const slug = (p.slug ?? "").trim();
+  const title = (p.title ?? "").trim();
+  const body = p.body ?? "";
+
+  if (!SLUG_RE.test(slug)) {
+    return NextResponse.json(
+      { error: "Slug yalnızca küçük harf, rakam ve tire içerebilir." },
+      { status: 400 },
+    );
+  }
+  if (!title) return NextResponse.json({ error: "Başlık boş olamaz." }, { status: 400 });
+  if (!body.trim()) return NextResponse.json({ error: "Yazı boş olamaz." }, { status: 400 });
+
+  const words = body.trim().split(/\s+/).length;
+  const post = {
+    slug,
+    title,
+    category: (p.category ?? "Genel").trim(),
+    date: /^\d{4}-\d{2}-\d{2}$/.test(p.date ?? "") ? p.date : new Date().toISOString().slice(0, 10),
+    readMinutes: Math.max(1, Math.round(words / WORDS_PER_MINUTE)),
+    excerpt: (p.excerpt ?? "").trim(),
+    published: p.published !== false,
+    body,
+  };
+
+  const path = `content/posts/${slug}.json`;
+  const api = `https://api.github.com/repos/${REPO}/contents/${path}`;
+  const headers = {
+    Authorization: `Bearer ${token}`,
+    Accept: "application/vnd.github+json",
+    "Content-Type": "application/json",
+  };
+
+  try {
+    // A file that already exists must be updated with its blob sha.
+    let sha: string | undefined;
+    const existing = await fetch(`${api}?ref=${BRANCH}`, { headers, cache: "no-store" });
+    if (existing.ok) sha = (await existing.json()).sha;
+    else if (existing.status !== 404) {
+      return NextResponse.json(
+        { error: `GitHub okunamadı (${existing.status}).` },
+        { status: 502 },
+      );
+    }
+
+    const content = Buffer.from(JSON.stringify(post, null, 2) + "\n", "utf8").toString("base64");
+    const write = await fetch(api, {
+      method: "PUT",
+      headers,
+      body: JSON.stringify({
+        message: `${sha ? "post: update" : "post: add"} ${slug}`,
+        content,
+        branch: BRANCH,
+        ...(sha ? { sha } : {}),
+      }),
+    });
+
+    if (!write.ok) {
+      const detail = await write.text();
+      return NextResponse.json(
+        { error: `Yayınlanamadı (${write.status}). ${detail.slice(0, 160)}` },
+        { status: 502 },
+      );
+    }
+
+    const result = await write.json();
+    return NextResponse.json({
+      ok: true,
+      updated: Boolean(sha),
+      commit: result.commit?.sha?.slice(0, 7),
+      url: `/tr/blog/${slug}`,
+    });
+  } catch (e) {
+    return NextResponse.json(
+      { error: `Beklenmeyen hata: ${e instanceof Error ? e.message : "bilinmiyor"}` },
+      { status: 500 },
+    );
+  }
+}
