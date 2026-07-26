@@ -12,15 +12,15 @@ export const site = {
     available: { en: "Available for work", tr: "İşe açığım" } as Bi,
     title: "Code. Ship. Repeat.",
     subtitle: {
-      en: "Doğan Aykaç — full-stack developer. Six years of building: agent platforms, encrypted communities, safe marketplaces, retail automation.",
-      tr: "Doğan Aykaç — full-stack geliştirici. Altı yıldır inşa ediyorum: ajan platformları, şifreli topluluklar, güvenli pazar yerleri, perakende otomasyonu.",
+      en: "Doğan Aykaç — full-stack developer. Twelve years of building: agent platforms, encrypted communities, safe marketplaces, retail automation.",
+      tr: "Doğan Aykaç — full-stack geliştirici. On iki yıldır inşa ediyorum: ajan platformları, şifreli topluluklar, güvenli pazar yerleri, perakende otomasyonu.",
     } as Bi,
   },
   bento: {
-    years: { en: "6 years", tr: "6 yıl" } as Bi,
+    years: { en: "12 years", tr: "12 yıl" } as Bi,
     yearsSub: {
-      en: "of shipping software — 3 of them professionally",
-      tr: "yazılım geliştiriyorum — 3'ü profesyonel",
+      en: "of building software — since I was 11",
+      tr: "yazılım geliştiriyorum — 11 yaşımdan beri",
     } as Bi,
     talk: { en: "Let's talk.", tr: "Konuşalım." } as Bi,
     location: { en: "İstanbul, TR", tr: "İstanbul, TR" } as Bi,
@@ -56,10 +56,11 @@ export const site = {
   about: {
     title: { en: "About.", tr: "Hakkımda." } as Bi,
     body: {
-      en: "I'm 23, from Türkiye. I started freelancing at 17 and never stopped. Today I build hard things — autonomous agent systems, end-to-end encryption, payment-safe marketplaces — and I ship them.",
-      tr: "23 yaşındayım, Türkiye'denim. 17 yaşımda freelance'e başladım ve hiç durmadım. Bugün zor şeyler inşa ediyorum — otonom ajan sistemleri, uçtan uca şifreleme, ödeme-güvenli pazar yerleri — ve hepsini yayına alıyorum.",
+      en: "I'm 23, from Türkiye. I started at 11, teaching myself on webmaster forums, and never stopped. Twelve years later I build hard things — autonomous agent systems, end-to-end encryption, payment-safe marketplaces — and I ship them.",
+      tr: "23 yaşındayım, Türkiye'denim. 11 yaşımda webmaster forumlarında kendi kendime öğrenerek başladım ve hiç durmadım. On iki yıl sonra zor şeyler inşa ediyorum — otonom ajan sistemleri, uçtan uca şifreleme, ödeme-güvenli pazar yerleri — ve hepsini yayına alıyorum.",
     } as Bi,
     timeline: [
+      { y: "2014", label: { en: "Started at 11 — webmaster forums", tr: "11 yaşında başladım — webmaster forumları" } as Bi },
       { y: "2020", label: { en: "First freelance project", tr: "İlk freelance proje" } as Bi },
       { y: "2023", label: { en: "Went professional", tr: "Profesyonelleştim" } as Bi },
       { y: "2026", label: { en: "Open to full-time roles", tr: "Full-time rollere açık" } as Bi },
