@@ -141,7 +141,9 @@ export function renderMarkdown(md: string): string {
   };
   const closeQuote = () => {
     if (quote.length) {
-      out.push(`<blockquote>${quote.map((q) => `<p>${inline(q)}</p>`).join("")}</blockquote>`);
+      // Consecutive `>` lines are one paragraph, the way Markdown treats them —
+      // a hard-wrapped quote should read as flowing text, not stacked lines.
+      out.push(`<blockquote><p>${inline(quote.join(" "))}</p></blockquote>`);
       quote = [];
     }
   };
@@ -164,9 +166,12 @@ export function renderMarkdown(md: string): string {
       continue;
     }
 
-    if (line.startsWith("&gt; ")) {
+    // `>` with or without a space — a missing space is the most common way to
+    // write a quote by hand, and leaking a literal `>` looks like a bug.
+    const q = line.match(/^&gt;\s?(.*)$/);
+    if (q) {
       closeList();
-      quote.push(line.slice(5));
+      quote.push(q[1]);
       continue;
     }
     closeQuote();

@@ -212,6 +212,30 @@ export function AdminEditor() {
     setError("");
   }
 
+  /** Prefix the current line (or every selected line) — for `## `, `> `, `- `,
+   *  `1. `. Inserting these at the cursor mid-line produces `text> more`,
+   *  which is not a quote and silently does nothing useful. */
+  function prefixLines(prefix: string) {
+    const ta = document.getElementById("body") as HTMLTextAreaElement | null;
+    if (!ta) return;
+    const { selectionStart: s, selectionEnd: e, value } = ta;
+    const from = value.lastIndexOf("\n", s - 1) + 1;
+    const toRaw = value.indexOf("\n", e);
+    const to = toRaw === -1 ? value.length : toRaw;
+    const block = value
+      .slice(from, to)
+      .split("\n")
+      .map((l) => (l.startsWith(prefix) ? l.slice(prefix.length) : prefix + l))
+      .join("\n");
+    const next = value.slice(0, from) + block + value.slice(to);
+    set("body", next);
+    requestAnimationFrame(() => {
+      ta.focus();
+      ta.selectionStart = from;
+      ta.selectionEnd = from + block.length;
+    });
+  }
+
   function insert(before: string, after = "") {
     const ta = document.getElementById("body") as HTMLTextAreaElement | null;
     if (!ta) return;
@@ -330,10 +354,10 @@ export function AdminEditor() {
           <div className="admin-tools">
             <button onClick={() => insert("**", "**")} title="Kalın">B</button>
             <button onClick={() => insert("*", "*")} title="İtalik"><i>I</i></button>
-            <button onClick={() => insert("## ")} title="Başlık">H2</button>
-            <button onClick={() => insert("> ")} title="Alıntı">&quot;&quot;</button>
-            <button onClick={() => insert("- ")} title="Liste">•</button>
-            <button onClick={() => insert("1. ")} title="Numaralı">1.</button>
+            <button onClick={() => prefixLines("## ")} title="Başlık">H2</button>
+            <button onClick={() => prefixLines("> ")} title="Alıntı">&quot;&quot;</button>
+            <button onClick={() => prefixLines("- ")} title="Liste">•</button>
+            <button onClick={() => prefixLines("1. ")} title="Numaralı">1.</button>
             <button onClick={() => insert("[", "](https://)")} title="Bağlantı">🔗</button>
             <button onClick={() => insert("`", "`")} title="Kod">{"</>"}</button>
           </div>
