@@ -17,7 +17,7 @@ export const cv = {
   } as Bi,
   location: {
     en: "Tekirdağ · İstanbul, Türkiye — remote-ready",
-    tr: "Tekirdağ · İstanbul, Türkiye — remote'a hazır",
+    tr: "Tekirdağ · İstanbul, Türkiye — remote çalışırım",
   } as Bi,
 
   summary: {
@@ -28,9 +28,9 @@ export const cv = {
   experienceLabel: { en: "EXPERIENCE", tr: "DENEYİM" } as Bi,
   productsLabel: {
     en: "SELECTED PRODUCTS — DESIGNED AND BUILT END TO END",
-    tr: "SEÇİLMİŞ ÜRÜNLER — UÇTAN UCA TASARLANDI VE GELİŞTİRİLDİ",
+    tr: "SEÇİLMİŞ ÜRÜNLER — BAŞTAN SONA TASARLADIM VE GELİŞTİRDİM",
   } as Bi,
-  skillsLabel: { en: "SKILLS & PRACTICE", tr: "YETKİNLİKLER & PRATİK" } as Bi,
+  skillsLabel: { en: "SKILLS & PRACTICE", tr: "YETKİNLİKLER & ÇALIŞMA BİÇİMİM" } as Bi,
 
   jobs: [
     {
@@ -171,7 +171,7 @@ export const cv = {
   } as Bi,
   caseStudies: {
     en: "Full case studies at",
-    tr: "Tüm vaka çalışmaları:",
+    tr: "Vaka çalışmalarının tamamı:",
   } as Bi,
-  print: { en: "Print / Save as PDF", tr: "Yazdır / PDF kaydet" } as Bi,
+  print: { en: "Print / Save as PDF", tr: "Yazdır / PDF olarak kaydet" } as Bi,
 };
