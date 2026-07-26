@@ -24,9 +24,9 @@ const WORDS_PER_MINUTE = 200;
 
 export async function POST(req: Request) {
   const token = process.env.GITHUB_TOKEN;
-  if (!process.env.ADMIN_PASSWORD || !token) {
+  if (!process.env.ADMIN_PASSWORD || !process.env.SESSION_SECRET || !token) {
     return NextResponse.json(
-      { error: "Publishing is not configured (ADMIN_PASSWORD / GITHUB_TOKEN missing)." },
+      { error: "Publishing is not configured (ADMIN_PASSWORD / SESSION_SECRET / GITHUB_TOKEN missing)." },
       { status: 503 },
     );
   }
@@ -34,6 +34,14 @@ export async function POST(req: Request) {
   const jar = await cookies();
   if (!sessionIsValid(jar.get(SESSION_COOKIE)?.value)) {
     return NextResponse.json({ error: "Oturum geçersiz. Tekrar giriş yap." }, { status: 401 });
+  }
+
+  // Defence in depth against CSRF. SameSite=Lax already withholds the cookie
+  // on cross-site POSTs; this survives an accidental future switch to None.
+  const origin = req.headers.get("origin");
+  const self = process.env.SITE_ORIGIN ?? "https://doganaykac.com";
+  if (origin && origin !== self) {
+    return NextResponse.json({ error: "Bad origin" }, { status: 403 });
   }
 
   let p: Incoming;
@@ -46,6 +54,20 @@ export async function POST(req: Request) {
   const slug = (p.slug ?? "").trim();
   const title = (p.title ?? "").trim();
   const body = p.body ?? "";
+
+  // The editor caps these client-side; the server is where it has to be true.
+  // Without this, one authenticated request could commit an unbounded blob to git.
+  const tooLong =
+    slug.length > 80 ||
+    title.length > 200 ||
+    (p.excerpt ?? "").length > 300 ||
+    (p.category ?? "").length > 60;
+  if (tooLong) {
+    return NextResponse.json({ error: "Alanlardan biri çok uzun." }, { status: 400 });
+  }
+  if (body.length > 100_000) {
+    return NextResponse.json({ error: "Yazı çok büyük (en fazla 100.000 karakter)." }, { status: 413 });
+  }
 
   if (!SLUG_RE.test(slug)) {
     return NextResponse.json(

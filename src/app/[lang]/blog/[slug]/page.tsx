@@ -6,6 +6,7 @@ import { site } from "@/content/site";
 import { blog } from "@/content/blog";
 import { getPost, getPosts, formatDate, renderMarkdown } from "@/lib/posts";
 import { Nav } from "@/components/Nav";
+import { jsonLdSafe } from "@/components/JsonLd";
 import { RevealProvider } from "@/components/Reveal";
 
 export function generateStaticParams() {
@@ -66,7 +67,7 @@ export default async function PostPage({
 
   return (
     <>
-      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: jsonLdSafe(jsonLd) }} />
       <RevealProvider />
       <Nav lang={lang} variant="project" />
 

@@ -3,6 +3,17 @@ import { projects } from "@/content/projects";
 import { SITE_URL, type Lang } from "@/lib/i18n";
 
 /**
+ * JSON.stringify escapes quotes but not `<`, so a value containing
+ * `</script>` would close the tag and everything after it becomes markup.
+ * Only the site owner can write these fields, but escaping costs nothing.
+ */
+export const jsonLdSafe = (data: unknown) =>
+  JSON.stringify(data)
+    .replace(/</g, "\\u003c")
+    .replace(/>/g, "\\u003e")
+    .replace(/&/g, "\\u0026");
+
+/**
  * Person + ProfilePage. Both are types Google actually understands for an
  * individual; neither is a "rich result" you can screenshot, but they are the
  * documented way to state entity facts (name, job title, sameAs links).
@@ -51,7 +62,7 @@ export function PersonJsonLd({ lang }: { lang: Lang }) {
   return (
     <script
       type="application/ld+json"
-      dangerouslySetInnerHTML={{ __html: JSON.stringify(graph) }}
+      dangerouslySetInnerHTML={{ __html: jsonLdSafe(graph) }}
     />
   );
 }
@@ -76,7 +87,7 @@ export function ProjectJsonLd({ slug, lang }: { slug: string; lang: Lang }) {
   return (
     <script
       type="application/ld+json"
-      dangerouslySetInnerHTML={{ __html: JSON.stringify(data) }}
+      dangerouslySetInnerHTML={{ __html: jsonLdSafe(data) }}
     />
   );
 }

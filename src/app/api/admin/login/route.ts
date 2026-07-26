@@ -4,8 +4,11 @@ import { passwordMatches, issueSession, SESSION_COOKIE, sessionCookieOptions } f
 export const runtime = "nodejs";
 
 export async function POST(req: Request) {
-  if (!process.env.ADMIN_PASSWORD) {
-    return NextResponse.json({ error: "Admin is not configured on this deployment." }, { status: 503 });
+  if (!process.env.ADMIN_PASSWORD || !process.env.SESSION_SECRET) {
+    return NextResponse.json(
+      { error: "Admin is not configured on this deployment (ADMIN_PASSWORD / SESSION_SECRET)." },
+      { status: 503 },
+    );
   }
 
   let password = "";
@@ -15,8 +18,10 @@ export async function POST(req: Request) {
     return NextResponse.json({ error: "Bad request" }, { status: 400 });
   }
 
-  // A deliberate small delay blunts trivial online guessing without needing
-  // shared state for rate limiting.
+  // Levels the response time between "wrong length" and "wrong bytes" so the
+  // reply shape leaks nothing. It is NOT rate limiting: on serverless, parallel
+  // requests each sleep independently. Brute-force resistance comes from a
+  // high-entropy ADMIN_PASSWORD plus an edge rate-limit rule (see README).
   await new Promise((r) => setTimeout(r, 400));
 
   if (!passwordMatches(password ?? "")) {
