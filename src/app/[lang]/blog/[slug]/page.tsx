@@ -89,6 +89,24 @@ export default async function PostPage({
         {/* Body is markdown rendered by our own escape-then-transform pass, so it
             cannot contain raw HTML. */}
         <div className="prose" lang="tr" dangerouslySetInnerHTML={{ __html: html }} />
+
+        {/* Fixed closing note. Built from parts rather than raw HTML so the
+            links stay real <Link>/<a> elements and nothing is injected. */}
+        <aside className="post-outro">
+          {(() => {
+            const [before, rest] = blog.outro[lang].split("{work}");
+            const [middle, after] = rest.split("{mail}");
+            return (
+              <p>
+                {before}
+                <Link href={`/${lang}/work`}>{blog.outroWork[lang]}</Link>
+                {middle}
+                <a href={`mailto:${site.links.email}`}>{blog.outroMail[lang]}</a>
+                {after}
+              </p>
+            );
+          })()}
+        </aside>
       </article>
 
       <footer className="proj-foot">

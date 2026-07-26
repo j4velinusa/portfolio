@@ -669,3 +669,11 @@ html.js-ready .reveal.in { opacity: 1; transform: none; }
   .admin-grid { grid-template-columns: 1fr; }
   .admin-list { order: 3; }
 }
+
+/* fixed closing note under a post */
+.post-outro {
+  margin-top: 48px; padding-top: 24px; border-top: 1px solid var(--line);
+}
+.post-outro p { font-size: 15.5px; line-height: 1.65; color: var(--muted); margin: 0; }
+.post-outro a { color: var(--blue); }
+.post-outro a:hover { text-decoration: underline; text-underline-offset: 3px; }

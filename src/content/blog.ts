@@ -18,6 +18,18 @@ export const blog = {
   } as Bi,
   writeMe: { en: "write to me", tr: "bana yaz" } as Bi,
   backToBlog: { en: "All posts", tr: "Tüm yazılar" } as Bi,
+
+  /**
+   * Fixed note under every post — rendered by the page, not typed into each
+   * body, so the two links can never drift or be forgotten.
+   * The {work} and {mail} markers are replaced with real links.
+   */
+  outro: {
+    en: "I think about these while working on {work}. If you disagree, or you're building something similar, {mail}.",
+    tr: "Bu konuları {work} üzerinde çalışırken düşünüyorum. Katılmıyorsan veya benzer bir şeyle uğraşıyorsan {mail}.",
+  } as Bi,
+  outroWork: { en: "my own products", tr: "kendi ürünlerim" } as Bi,
+  outroMail: { en: "don't hesitate to write", tr: "yazmaktan çekinme" } as Bi,
   /** Shown on the English side, because the posts themselves are Turkish. */
   turkishNote: {
     en: "This post is in Turkish.",
