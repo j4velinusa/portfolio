@@ -43,8 +43,9 @@ export function AdminEditor() {
   const [draft, setDraft] = useState<Draft>(emptyDraft);
   const [slugTouched, setSlugTouched] = useState(false);
 
-  // Drafts survive a refresh; they are local until you press Yayınla.
-  useEffect(() => {
+  /** Restore the local draft. Called on login rather than from an effect:
+   *  the draft is only needed once you are actually in the editor. */
+  function restoreDraft() {
     try {
       const raw = localStorage.getItem(DRAFT_KEY);
       if (raw) {
@@ -52,9 +53,9 @@ export function AdminEditor() {
         setSlugTouched(true);
       }
     } catch {
-      /* ignore a corrupt draft */
+      /* a corrupt draft just starts you fresh */
     }
-  }, []);
+  }
 
   useEffect(() => {
     const t = setTimeout(() => {
@@ -85,6 +86,7 @@ export function AdminEditor() {
       const d = await r.json();
       if (!r.ok) setError(d.error ?? "Giriş başarısız.");
       else {
+        restoreDraft();
         setAuthed(true);
         setPassword("");
       }
