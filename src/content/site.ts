@@ -16,16 +16,16 @@ export const site = {
     available: { en: "Available for work", tr: "İşe açığım" } as Bi,
     title: "Code. Ship. Repeat.",
     subtitle: {
-      en: "Doğan Aykaç — full-stack developer. Twelve years of building: agent platforms, encrypted communities, safe marketplaces, retail automation.",
-      tr: "Doğan Aykaç — full-stack geliştirici. On iki yıldır kod yazıyorum: ajan platformları, şifreli topluluklar, güvenli pazar yerleri, perakende otomasyonu.",
+      en: "Doğan Aykaç — full-stack developer. Twelve years writing code, six of them in the industry: agent platforms, encrypted communities, safe marketplaces, retail automation.",
+      tr: "Doğan Aykaç — full-stack geliştirici. On iki yıldır kod yazıyorum, altı yılı sektörde: ajan platformları, şifreli topluluklar, güvenli pazar yerleri, perakende otomasyonu.",
     } as Bi,
   },
 
   bento: {
     years: { en: "12 years", tr: "12 yıl" } as Bi,
     yearsSub: {
-      en: "of building software — since I was 11",
-      tr: "kod yazıyorum — 11 yaşımdan beri",
+      en: "writing code — six of them in the industry",
+      tr: "kod yazıyorum — altı yılı sektörde",
     } as Bi,
     talk: { en: "Let's talk.", tr: "Konuşalım." } as Bi,
     location: { en: "İstanbul, TR", tr: "İstanbul, TR" } as Bi,
@@ -120,8 +120,8 @@ export const site = {
       tr: "Zor işlere girişiyorum. Ve bitiriyorum.",
     } as Bi,
     intro: {
-      en: "I'm Doğan Aykaç — 23, from Türkiye. I started at 11, teaching myself on webmaster forums, and never stopped. Twelve years in, my work has moved from client sites to systems that are genuinely difficult: autonomous agent fleets, end-to-end encryption, escrow payments, retail automation.",
-      tr: "Ben Doğan Aykaç, 23 yaşındayım. 11 yaşımda webmaster forumlarında kendi kendime öğrenerek başladım, o gün bugün hiç ara vermedim. On iki yılda müşteri sitelerinden gerçekten çetin sistemlere geçtim: otonom ajan filoları, uçtan uca şifreleme, escrow ödemeler, perakende otomasyonu.",
+      en: "I'm Doğan Aykaç — 23, from Türkiye. I started at 11, teaching myself on webmaster forums, and never stopped. Six of those twelve years have been in the industry: an internship in agricultural robotics that grew into engineering ownership, a stint on an autonomous-vehicle platform, and now four products of my own — autonomous agent fleets, end-to-end encryption, escrow payments, retail automation.",
+      tr: "Ben Doğan Aykaç, 23 yaşındayım. 11 yaşımda webmaster forumlarında kendi kendime öğrenerek başladım, o gün bugün hiç ara vermedim. Bu on iki yılın altısı sektörde geçti: tarım robotiğinde mühendislik sorumluluğuna dönüşen bir staj, otonom araç platformunda bir dönem ve şimdi kendi dört ürünüm — otonom ajan filoları, uçtan uca şifreleme, escrow ödemeler, perakende otomasyonu.",
     } as Bi,
     intro2: {
       en: "I design and build both sides. Every product on this site — the interface, the design system, the backend, the database — came from one person. That's not a boast; it's why I care about systems that hold up without a team to babysit them.",
@@ -159,40 +159,32 @@ export const site = {
         y: "2014",
         title: { en: "Started at 11", tr: "11 yaşında başladım" } as Bi,
         note: {
-          en: "Webmaster forums — HTML, hosting, and a lot of breaking things.",
+          en: "Webmaster forums — HTML, hosting and a lot of breaking things.",
           tr: "Webmaster forumları: HTML, hosting ve bol bol bir şeyleri bozup düzeltmek.",
         } as Bi,
       },
       {
         y: "2020",
-        title: { en: "First freelance project", tr: "İlk freelance proje" } as Bi,
+        title: { en: "Bear Flag Robotics", tr: "Bear Flag Robotics" } as Bi,
         note: {
-          en: "At 17 — client sites, small tools, learning by shipping.",
-          tr: "17 yaşında: müşteri siteleri, küçük araçlar. Yayına alarak öğrendim.",
+          en: "Intern → software engineer on autonomous agricultural machinery, remote. Two and a half years.",
+          tr: "Otonom tarım makinelerinde stajyerlikten yazılım mühendisliğine, remote. İki buçuk yıl.",
         } as Bi,
       },
       {
-        y: "2023",
-        title: { en: "Went professional", tr: "Profesyonelleştim" } as Bi,
+        y: "2022",
+        title: { en: "TheProEco", tr: "TheProEco" } as Bi,
         note: {
-          en: "Full product work: mobile apps, APIs, databases, real users.",
-          tr: "Artık tam ürün işi: mobil uygulama, API, veritabanı ve gerçek kullanıcılar.",
+          en: "Full-stack development across web and mobile clients, APIs and deployment.",
+          tr: "Web ve mobil istemciler, API'ler ve deployment boyunca full-stack geliştirme.",
         } as Bi,
       },
       {
-        y: "2025",
-        title: { en: "TECK · retail automation", tr: "TECK · perakende otomasyonu" } as Bi,
+        y: "2024",
+        title: { en: "Cruise (GM), then independent", tr: "Cruise (GM), sonra bağımsız" } as Bi,
         note: {
-          en: "Barcode stock app, online storefront and admin panel, end to end.",
-          tr: "Barkodlu stok uygulaması, online mağaza ve yönetim paneli — baştan sona.",
-        } as Bi,
-      },
-      {
-        y: "2026",
-        title: { en: "DRAVION · Xaron · Sperare", tr: "DRAVION · Xaron · Sperare" } as Bi,
-        note: {
-          en: "Autonomous agent platform, encrypted community platform, escrow marketplace.",
-          tr: "Otonom ajan platformu, şifreli topluluk platformu, escrow pazar yeri.",
+          en: "Three months on the self-driving platform, then four products of my own — and co-founding Xaron.",
+          tr: "Sürücüsüz araç platformunda üç ay; ardından kendi dört ürünüm ve Xaron'un kurucu ortaklığı.",
         } as Bi,
       },
       {

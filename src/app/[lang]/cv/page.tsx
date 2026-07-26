@@ -103,6 +103,18 @@ export default async function CVPage({ params }: { params: Promise<{ lang: strin
           </dl>
         </section>
 
+        <section>
+          <h2 className="cv-lab">{cv.educationLabel[lang]}</h2>
+          {cv.education.map((e) => (
+            <div key={e.school} className="cv-job-head">
+              <span>
+                <strong>{e.school}</strong>{" "}
+                <span className="cv-job-role">{e.detail[lang]}</span>
+              </span>
+            </div>
+          ))}
+        </section>
+
         <footer className="cv-foot">
           <span>{cv.footer[lang]}</span>
           <span>

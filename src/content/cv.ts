@@ -21,8 +21,8 @@ export const cv = {
   } as Bi,
 
   summary: {
-    en: "Twelve years building software, three of them professionally — backend and platform architecture for YC-backed companies in autonomy, fintech and HR, alongside products I design and build end to end. Comfortable owning the whole stack: interface, design system, API, database, payments and infrastructure.",
-    tr: "On iki yıldır kod yazıyorum, üç yılı profesyonel. Otonomi, fintech ve İK alanındaki YC destekli şirketlerde backend ve platform mimarisi; yanı sıra baştan sona kendi tasarlayıp geliştirdiğim ürünler. Arayüzden veritabanına, ödemeden altyapıya kadar tüm stack bende.",
+    en: "Twelve years writing code, six of them in the industry — from an internship in agricultural robotics to autonomous-vehicle platforms, and now four products I design and build end to end. Comfortable owning the whole stack: interface, design system, API, database, payments and infrastructure.",
+    tr: "On iki yıldır kod yazıyorum, altı yılı sektörde: tarım robotiğinde bir stajla başladı, otonom araç platformlarına uzandı, şimdi de baştan sona kendi tasarlayıp geliştirdiğim dört ürün var. Arayüzden veritabanına, ödemeden altyapıya kadar tüm stack bende.",
   } as Bi,
 
   experienceLabel: { en: "EXPERIENCE", tr: "DENEYİM" } as Bi,
@@ -30,61 +30,52 @@ export const cv = {
     en: "SELECTED PRODUCTS — DESIGNED AND BUILT END TO END",
     tr: "SEÇİLMİŞ ÜRÜNLER — BAŞTAN SONA TASARLADIM VE GELİŞTİRDİM",
   } as Bi,
-  skillsLabel: { en: "SKILLS & PRACTICE", tr: "YETKİNLİKLER & ÇALIŞMA BİÇİMİM" } as Bi,
+  skillsLabel: { en: "CORE STACK", tr: "TEMEL STACK" } as Bi,
 
   jobs: [
     {
-      company: "Cruise",
+      company: "Independent",
       role: {
-        en: "Architecture Developer — autonomous vehicles",
-        tr: "Mimari Geliştirici — otonom araçlar",
+        en: "Full-stack Engineer & Product Designer",
+        tr: "Full-stack Geliştirici & Ürün Tasarımcısı",
       },
-      dates: "2025 – 2026 · 9 mo",
+      dates: "2024 – present",
       note: {
-        en: "Architecture work on self-driving vehicle systems: service boundaries, data flow between autonomy components, and the reliability constraints that come with software nobody can restart mid-drive.",
-        tr: "Sürücüsüz araç sistemlerinde mimari: servis sınırları, otonomi bileşenleri arasındaki veri akışı ve yol ortasında kimsenin yeniden başlatamayacağı bir yazılımın getirdiği güvenilirlik kısıtları.",
+        en: "Client work alongside four products of my own, each designed and built end to end — the case studies below. Co-founded Xaron in the same period.",
+        tr: "Müşteri işlerinin yanında baştan sona kendi tasarlayıp geliştirdiğim dört ürün — aşağıdaki vaka çalışmaları. Aynı dönemde Xaron'un kurucu ortağı oldum.",
       },
     },
     {
-      company: "Rippling",
+      company: "Cruise (GM)",
       role: {
-        en: "Backend / API Architecture Engineer",
-        tr: "Backend / API Mimarisi Mühendisi",
+        en: "Autonomous vehicles — training programme",
+        tr: "Otonom araçlar — eğitim programı",
       },
-      dates: "2024 – 2025 · 1 yr 4 mo",
+      dates: "2024 · 3 mo",
       note: {
-        en: "API and service architecture on a workforce platform where HR, IT and payroll share one employee record — schema design, contract-first endpoints, and keeping integrations consistent as the surface grew.",
-        tr: "İK, IT ve bordronun aynı çalışan kaydını paylaştığı bir platformda API ve servis mimarisi: şema tasarımı, sözleşmeyle başlayan endpoint'ler ve yüzey büyürken entegrasyonları tutarlı tutmak.",
+        en: "Three-month programme on the self-driving platform after it moved under General Motors: autonomy services, data flow between components, and the reliability constraints of software nobody can restart mid-drive.",
+        tr: "Platform General Motors'a geçtikten sonra sürücüsüz araç tarafında üç aylık program: otonomi servisleri, bileşenler arası veri akışı ve yol ortasında kimsenin yeniden başlatamayacağı bir yazılımın güvenilirlik kısıtları.",
       },
     },
     {
-      company: "Podium",
-      role: { en: "Full-stack Software Engineer", tr: "Full-stack Yazılım Mühendisi" },
-      dates: "2024 · 8 mo",
+      company: "TheProEco",
+      role: { en: "Full-stack Developer, intern", tr: "Full-stack Geliştirici, stajyer" },
+      dates: "2022 – 2023",
       note: {
-        en: "Product engineering across the customer-messaging platform — front-end features through to the services and data behind them.",
-        tr: "Müşteri mesajlaşma platformunda ürün mühendisliği: arayüz özelliklerinden arkadaki servis ve veriye kadar.",
+        en: "Product development across web and mobile clients, APIs, databases and deployment.",
+        tr: "Web ve mobil istemciler, API'ler, veritabanı ve deployment boyunca ürün geliştirme.",
       },
     },
     {
       company: "Bear Flag Robotics",
       role: {
-        en: "Autonomous Systems Architecture · remote",
-        tr: "Otonom Sistemler Mimarisi · remote",
+        en: "Intern → Software Engineer, autonomous systems · remote",
+        tr: "Stajyer → Yazılım Mühendisi, otonom sistemler · remote",
       },
-      dates: "2023 – 2024 · 1 yr 1 mo",
+      dates: "2020 – 2022 · 2 yrs 6 mo",
       note: {
-        en: "Architecture for autonomous agricultural machinery: telemetry pipelines, operator-facing tooling, and systems that have to stay predictable in a field with no network.",
-        tr: "Otonom tarım makineleri için mimari: telemetri hatları, operatörün kullandığı araçlar ve şebeke çekmeyen bir tarlada bile öngörülebilir çalışmak zorunda olan sistemler.",
-      },
-    },
-    {
-      company: "TheProEco",
-      role: { en: "Full-stack Developer", tr: "Full-stack Geliştirici" },
-      dates: "2022 – 2023",
-      note: {
-        en: "End-to-end product development — web and mobile clients, APIs, databases and deployment.",
-        tr: "Baştan sona ürün geliştirme: web ve mobil istemciler, API'ler, veritabanı ve deployment.",
+        en: "Started as an intern and grew into engineering ownership on autonomous agricultural machinery — telemetry pipelines, operator-facing tooling, and systems that stay predictable in a field with no network.",
+        tr: "Stajyer olarak başladım, otonom tarım makinelerinde mühendislik sorumluluğuna kadar geldim: telemetri hatları, operatörün kullandığı araçlar ve şebeke çekmeyen bir tarlada bile öngörülebilir kalan sistemler.",
       },
     },
   ] satisfies Job[],
@@ -99,8 +90,8 @@ export const cv = {
 
   productMeta: {
     dravion: { en: "Private beta · dravion.co", tr: "Özel beta · dravion.co" },
-    xaron: { en: "Co-founder · closed beta · xaron.co", tr: "Kurucu ortak · kapalı beta · xaron.co" },
-    sperare: { en: "Private beta · sperare.app", tr: "Özel beta · sperare.app" },
+    xaron: { en: "Co-founder · open beta · xaron.co", tr: "Kurucu ortak · açık beta · xaron.co" },
+    sperare: { en: "Open beta · sperare.app", tr: "Açık beta · sperare.app" },
     teck: { en: "In production · 3 stores · arelmoda.net", tr: "Yayında · 3 mağaza · arelmoda.net" },
   } as Record<string, Bi>,
 
@@ -118,52 +109,39 @@ export const cv = {
       tr: "Para, idempotent bir fonlama → aşama → serbest bırakma durum makinesinden geçiyor; webhook'lar tekrar gelse bile güvenli. Pasaport ve banka ekstreleri Postgres satır seviyesi güvenliğin arkasında; güven alanlarına ve ödeme yazmalarına yalnızca servis rolü dokunabiliyor.",
     },
     teck: {
-      en: "Mobile barcode app, online store and admin panel on one inventory: a scan on the shop floor updates e-commerce stock in the same moment. Variant matrix, per-channel profit and loss after discounts, and printable date-range reporting.",
-      tr: "Tek envanter üstünde mobil barkod uygulaması, online mağaza ve yönetim paneli: mağazadaki okutma aynı anda e-ticaret stoğunu düşürüyor. Varyant matrisi, iskonto sonrası kanal bazlı kâr/zarar ve tarih aralıklı, yazdırmaya hazır raporlar.",
+      en: "Mobile barcode app, online store and admin panel over a single inventory. A counter sale and a web checkout race for the same garment, so the count is authoritative in one place and the losing request fails cleanly instead of overselling. Every size × colour pair is its own countable unit with its own barcode and price history, rolled back up for per-channel profit and loss after campaign discounts.",
+      tr: "Tek envanter üstünde mobil barkod uygulaması, online mağaza ve yönetim paneli. Kasadaki satışla web'deki sipariş aynı ürün için yarışıyor; sayım tek yerde tutulduğu için kaybeden istek fazla satış yapmak yerine düzgünce hata veriyor. Her beden × renk çifti kendi barkodu ve fiyat geçmişiyle ayrı bir sayım birimi; hepsi kampanya iskontosu sonrası kanal bazlı kâr/zarara toplanıyor.",
     },
   } as Record<string, Bi>,
 
   skills: [
     {
       label: { en: "Languages", tr: "Diller" },
-      value: { en: "Rust · TypeScript · JavaScript · SQL", tr: "Rust · TypeScript · JavaScript · SQL" },
+      value: { en: "Rust · TypeScript", tr: "Rust · TypeScript" },
     },
     {
-      label: { en: "Frontend", tr: "Frontend" },
-      value: {
-        en: "React · Next.js 15 · React Native · Expo · Leptos (WASM)",
-        tr: "React · Next.js 15 · React Native · Expo · Leptos (WASM)",
-      },
+      label: { en: "Product", tr: "Ürün" },
+      value: { en: "React Native · Node.js · PostgreSQL", tr: "React Native · Node.js · PostgreSQL" },
     },
     {
-      label: { en: "Backend & infra", tr: "Backend & altyapı" },
-      value: {
-        en: "Node.js · Express · Axum · REST · BullMQ · WebTransport/QUIC · Docker · AWS · Google Cloud",
-        tr: "Node.js · Express · Axum · REST · BullMQ · WebTransport/QUIC · Docker · AWS · Google Cloud",
-      },
-    },
-    {
-      label: { en: "Data", tr: "Veri" },
-      value: {
-        en: "PostgreSQL (RLS, pgvector) · Supabase · ScyllaDB · Firebase · Oracle · Drizzle · sqlx",
-        tr: "PostgreSQL (RLS, pgvector) · Supabase · ScyllaDB · Firebase · Oracle · Drizzle · sqlx",
-      },
-    },
-    {
-      label: { en: "Payments & security", tr: "Ödeme & güvenlik" },
-      value: {
-        en: "Stripe Connect escrow & payouts · OpenMLS (RFC 9420) · KYC · GDPR / KVKK",
-        tr: "Stripe Connect escrow & ödemeler · OpenMLS (RFC 9420) · KYC · GDPR / KVKK",
-      },
-    },
-    {
-      label: { en: "Practice", tr: "Pratik" },
+      label: { en: "Practice", tr: "Çalışma biçimi" },
       value: {
         en: "Strict typing, no any or unwrap() in production · STRIDE threat modelling · one CI gate (lint-deny, unit + integration + E2E, dependency audit) · OpenTelemetry tracing · design systems and tokens",
         tr: "Katı tipleme; production'da any ya da unwrap() yok · STRIDE tehdit modelleme · tek CI kapısı (lint-deny, birim + entegrasyon + E2E, bağımlılık denetimi) · OpenTelemetry tracing · design system ve token'lar",
       },
     },
   ] satisfies SkillRow[],
+
+  educationLabel: { en: "EDUCATION", tr: "EĞİTİM" } as Bi,
+  education: [
+    {
+      school: "Uzunköprü Anadolu Lisesi",
+      detail: {
+        en: "Foreign Language track — graduated",
+        tr: "Yabancı Dil alanı — mezun",
+      } as Bi,
+    },
+  ],
 
   footer: {
     en: "Turkish native · English professional — remote-ready, open to relocation",
