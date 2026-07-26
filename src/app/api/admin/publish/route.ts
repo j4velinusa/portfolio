@@ -3,6 +3,7 @@ import { cookies } from "next/headers";
 import { sessionIsValid, SESSION_COOKIE } from "@/lib/admin-auth";
 
 export const runtime = "nodejs";
+export const dynamic = "force-dynamic";
 
 type Incoming = {
   slug?: string;
@@ -44,6 +45,10 @@ export async function POST(req: Request) {
     return NextResponse.json({ error: "Bad origin" }, { status: 403 });
   }
 
+  if (!(req.headers.get("content-type") ?? "").includes("application/json")) {
+    return NextResponse.json({ error: "Content-Type must be application/json" }, { status: 415 });
+  }
+
   let p: Incoming;
   try {
     p = await req.json();
@@ -78,6 +83,20 @@ export async function POST(req: Request) {
   if (!title) return NextResponse.json({ error: "Başlık boş olamaz." }, { status: 400 });
   if (!body.trim()) return NextResponse.json({ error: "Yazı boş olamaz." }, { status: 400 });
 
+  // SEC-06: the repo is public, so a "draft" committed here would be readable
+  // on GitHub and would stay in the commit history forever — the opposite of
+  // what "Taslak olarak kaydet" implies. Drafts therefore never leave the
+  // browser; only an explicit publish writes to git.
+  if (p.published === false) {
+    return NextResponse.json(
+      {
+        error:
+          "Taslaklar herkese açık repoya yazılmaz — tarayıcında saklanıyor. Yayınlamak için durumu 'Yayında' yap.",
+      },
+      { status: 400 },
+    );
+  }
+
   const words = body.trim().split(/\s+/).length;
   const post = {
     slug,
@@ -86,7 +105,8 @@ export async function POST(req: Request) {
     date: /^\d{4}-\d{2}-\d{2}$/.test(p.date ?? "") ? p.date : new Date().toISOString().slice(0, 10),
     readMinutes: Math.max(1, Math.round(words / WORDS_PER_MINUTE)),
     excerpt: (p.excerpt ?? "").trim(),
-    published: p.published !== false,
+    // Drafts are rejected above, so anything reaching git is published.
+    published: true,
     body,
   };
 
@@ -101,7 +121,11 @@ export async function POST(req: Request) {
   try {
     // A file that already exists must be updated with its blob sha.
     let sha: string | undefined;
-    const existing = await fetch(`${api}?ref=${BRANCH}`, { headers, cache: "no-store" });
+    const existing = await fetch(`${api}?ref=${BRANCH}`, {
+      headers,
+      cache: "no-store",
+      signal: AbortSignal.timeout(10_000),
+    });
     if (existing.ok) sha = (await existing.json()).sha;
     else if (existing.status !== 404) {
       return NextResponse.json(
@@ -114,6 +138,7 @@ export async function POST(req: Request) {
     const write = await fetch(api, {
       method: "PUT",
       headers,
+      signal: AbortSignal.timeout(15_000),
       body: JSON.stringify({
         message: `${sha ? "post: update" : "post: add"} ${slug}`,
         content,
@@ -123,11 +148,10 @@ export async function POST(req: Request) {
     });
 
     if (!write.ok) {
-      const detail = await write.text();
-      return NextResponse.json(
-        { error: `Yayınlanamadı (${write.status}). ${detail.slice(0, 160)}` },
-        { status: 502 },
-      );
+      // Detail goes to the server log, not to the response: even an
+      // authenticated caller doesn't need our integration internals.
+      console.error("[publish] GitHub write failed", write.status, await write.text());
+      return NextResponse.json({ error: `Yayınlanamadı (${write.status}).` }, { status: 502 });
     }
 
     const result = await write.json();
@@ -138,9 +162,11 @@ export async function POST(req: Request) {
       url: `/tr/blog/${slug}`,
     });
   } catch (e) {
+    console.error("[publish] unexpected", e);
+    const timedOut = e instanceof Error && e.name === "TimeoutError";
     return NextResponse.json(
-      { error: `Beklenmeyen hata: ${e instanceof Error ? e.message : "bilinmiyor"}` },
-      { status: 500 },
+      { error: timedOut ? "GitHub yanıt vermedi, tekrar dene." : "Beklenmeyen bir hata oldu." },
+      { status: timedOut ? 504 : 500 },
     );
   }
 }

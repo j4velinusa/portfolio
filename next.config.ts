@@ -36,12 +36,25 @@ const securityHeaders = [
 ];
 
 const nextConfig: NextConfig = {
+  // Don't advertise the framework.
+  poweredByHeader: false,
   images: {
     // AVIF first, WebP as the fallback the optimizer negotiates per request.
     formats: ["image/avif", "image/webp"],
   },
   async headers() {
-    return [{ source: "/:path*", headers: securityHeaders }];
+    return [
+      { source: "/:path*", headers: securityHeaders },
+      {
+        // The panel and its API must never sit in a shared cache, and must
+        // never be indexed — robots.txt is a request, a header is a directive.
+        source: "/:path(admin|api/admin/.*)",
+        headers: [
+          { key: "Cache-Control", value: "no-store, max-age=0" },
+          { key: "X-Robots-Tag", value: "noindex, nofollow, noarchive" },
+        ],
+      },
+    ];
   },
   async redirects() {
     // A fixed redirect to the default locale — deliberately NOT based on

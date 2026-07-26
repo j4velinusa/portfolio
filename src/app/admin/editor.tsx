@@ -112,6 +112,13 @@ export function AdminEditor() {
         setError(d.error ?? "Yayınlanamadı.");
         if (r.status === 401) setAuthed(false);
       } else {
+        // The draft is now in git; leaving a copy in localStorage only widens
+        // the window for a future same-origin script to read it.
+        try {
+          localStorage.removeItem(DRAFT_KEY);
+        } catch {
+          /* nothing to clean up */
+        }
         setStatus(
           `${d.updated ? "Güncellendi" : "Yayınlandı"} · commit ${d.commit} — Vercel dağıtımı başladı, ~1 dk içinde canlıda.`,
         );
@@ -121,6 +128,24 @@ export function AdminEditor() {
     } finally {
       setBusy(false);
     }
+  }
+
+  async function logout() {
+    try {
+      await fetch("/api/admin/login", { method: "DELETE" });
+    } catch {
+      /* the cookie expires on its own anyway */
+    }
+    try {
+      localStorage.removeItem(DRAFT_KEY);
+    } catch {
+      /* nothing to clean up */
+    }
+    setDraft(emptyDraft());
+    setSlugTouched(false);
+    setStatus("");
+    setError("");
+    setAuthed(false);
   }
 
   function insert(before: string, after = "") {
@@ -170,6 +195,9 @@ export function AdminEditor() {
           <a href="/tr/blog" target="_blank" rel="noreferrer" className="admin-ghost">
             Blogu aç
           </a>
+          <button onClick={logout} className="admin-ghost">
+            Çıkış
+          </button>
           <button onClick={publish} disabled={busy} className="admin-primary">
             {busy ? "Gönderiliyor…" : draft.published ? "Yayınla" : "Taslak olarak kaydet"}
           </button>

@@ -16,13 +16,66 @@ export type Post = {
 
 const POSTS_DIR = path.join(process.cwd(), "content", "posts");
 
+/** A real calendar date, not just four-two-two digits: 2026-99-99 must fail. */
+function isRealDate(v: unknown): v is string {
+  if (typeof v !== "string" || !/^\d{4}-\d{2}-\d{2}$/.test(v)) return false;
+  const [y, m, d] = v.split("-").map(Number);
+  const dt = new Date(Date.UTC(y, m - 1, d));
+  return dt.getUTCFullYear() === y && dt.getUTCMonth() === m - 1 && dt.getUTCDate() === d;
+}
+
+const str = (v: unknown, max: number) => typeof v === "string" && v.length > 0 && v.length <= max;
+
+/**
+ * Content files are data, so they get validated like data — a hand-edited or
+ * half-written JSON should drop that one post, never take the build down.
+ * Returns null (and warns) instead of throwing.
+ */
+function parsePost(raw: unknown, file: string): Post | null {
+  const p = raw as Partial<Post>;
+  const ok =
+    str(p.slug, 80) &&
+    /^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(p.slug as string) &&
+    str(p.title, 200) &&
+    str(p.category, 60) &&
+    isRealDate(p.date) &&
+    typeof p.excerpt === "string" &&
+    p.excerpt.length <= 300 &&
+    typeof p.body === "string" &&
+    p.body.length <= 250_000 &&
+    typeof p.published === "boolean";
+
+  if (!ok) {
+    console.warn(`[posts] skipping ${file}: does not match the post schema`);
+    return null;
+  }
+  return {
+    slug: p.slug as string,
+    title: p.title as string,
+    category: p.category as string,
+    date: p.date as string,
+    readMinutes: typeof p.readMinutes === "number" && p.readMinutes > 0 ? p.readMinutes : 1,
+    excerpt: p.excerpt as string,
+    published: p.published as boolean,
+    body: p.body as string,
+  };
+}
+
 /** Published posts, newest first. Server-only — reads the repo at build time. */
 export function getPosts({ includeDrafts = false } = {}): Post[] {
   if (!fs.existsSync(POSTS_DIR)) return [];
   return fs
     .readdirSync(POSTS_DIR)
     .filter((f) => f.endsWith(".json"))
-    .map((f) => JSON.parse(fs.readFileSync(path.join(POSTS_DIR, f), "utf8")) as Post)
+    .map((f) => {
+      try {
+        return parsePost(JSON.parse(fs.readFileSync(path.join(POSTS_DIR, f), "utf8")), f);
+      } catch {
+        console.warn(`[posts] skipping ${f}: invalid JSON`);
+        return null;
+      }
+    })
+    .filter((p): p is Post => p !== null)
     .filter((p) => includeDrafts || p.published)
     .sort((a, b) => b.date.localeCompare(a.date));
 }
