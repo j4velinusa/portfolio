@@ -2,7 +2,7 @@
   "slug": "kendi-sifrelemeni-yazma-mls-tam-da-bu-yuzden-var",
   "title": "Kendi şifrelemeni yazma. MLS tam da bu yüzden var.",
   "category": "Ajanlar",
-  "date": "2026-07-26",
+  "date": "2026-07-25",
   "readMinutes": 2,
   "excerpt": "\"Kendi E2EE protokolümüzü yazdık\" cümlesi 2026'da bir övünme değil, bir uyarı işareti. RFC 9420 üç yıldır ortada ve grup mesajlaşmasının gerçekten zor kısmını çözüyor.",
   "published": true,
