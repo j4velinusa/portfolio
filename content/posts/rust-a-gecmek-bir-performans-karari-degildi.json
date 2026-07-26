@@ -2,7 +2,7 @@
   "slug": "rust-a-gecmek-bir-performans-karari-degildi",
   "title": "Rust'a geçmek bir performans kararı değildi.",
   "category": "Ajanlar",
-  "date": "2026-07-26",
+  "date": "2026-07-22",
   "readMinutes": 2,
   "excerpt": "TypeScript'ten Rust'a geçerken beklediğim şey hızdı. Aldığım şey, bir sınıf hatanın derleme zamanında ölmesi oldu — ve asıl fark orada.",
   "published": true,
