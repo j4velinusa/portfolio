@@ -2,6 +2,15 @@ import { NextResponse } from "next/server";
 import { cookies } from "next/headers";
 import { put, list, del, head, BlobNotFoundError, BlobServiceRateLimited } from "@vercel/blob";
 import { sessionIsValid, SESSION_COOKIE } from "@/lib/admin-auth";
+import {
+  BLOB_HOST_RE,
+  BLOB_PATH_RE,
+  MAX_PROXY_UPLOAD_BYTES,
+  MEDIA_PREFIX,
+  isMediaType,
+  mediaPathFor,
+  type MediaType,
+} from "@/lib/media";
 
 // The Blob SDK is Node-only (engines node>=20, undici + is-node-process), and
 // the session guard reaches node:crypto through @/lib/admin-auth. Neither
@@ -9,57 +18,17 @@ import { sessionIsValid, SESSION_COOKIE } from "@/lib/admin-auth";
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 
-/** Everything this route touches lives under one prefix, so a stray url can't reach other blobs. */
-const PREFIX = "media/";
-
 /**
- * Vercel Functions hard-cap the request body at 4.5 MB and answer with their
- * own opaque 413 (FUNCTION_PAYLOAD_TOO_LARGE). Our cap sits below that so the
- * Turkish message is the one the panel actually sees. Same reasoning as the
- * body-length cap in publish/route.ts: the client caps it too, but the server
- * is where it has to be true.
+ * The allowlist, the caps, the prefix and the filename sanitiser all live in
+ * @/lib/media, because /api/admin/media/token has to agree with this route
+ * exactly. On the client-token path the browser builds the pathname itself and
+ * the SDK's hook can only accept or reject it, so a second copy of that logic
+ * here would drift into a bug nobody sees until an upload silently lands under
+ * the wrong name.
  */
-const MAX_UPLOAD_BYTES = 4 * 1024 * 1024;
 
 /** A year — media is content-addressed by the random suffix, so it never changes under a url. */
 const CACHE_MAX_AGE = 31536000;
-
-type AllowedType = "image/jpeg" | "image/png" | "image/webp" | "image/avif";
-
-const ALLOWED: readonly string[] = ["image/jpeg", "image/png", "image/webp", "image/avif"];
-
-function isAllowed(t: string): t is AllowedType {
-  return ALLOWED.includes(t);
-}
-
-const EXTENSION: Record<AllowedType, string> = {
-  "image/jpeg": "jpg",
-  "image/png": "png",
-  "image/webp": "webp",
-  "image/avif": "avif",
-};
-
-/** Turkish letters NFKD cannot fix: ı has no decomposition, and ş/ğ round-trip badly. */
-const TURKISH: Record<string, string> = {
-  ı: "i",
-  İ: "i",
-  ş: "s",
-  Ş: "s",
-  ğ: "g",
-  Ğ: "g",
-  ç: "c",
-  Ç: "c",
-  ö: "o",
-  Ö: "o",
-  ü: "u",
-  Ü: "u",
-};
-
-/** Public blob delivery host: <storeId>.public.blob.vercel-storage.com, storeId is [a-z0-9]. */
-const BLOB_HOST_RE = /^[a-z0-9]+\.public\.blob\.vercel-storage\.com$/;
-
-/** Sanitised name + the SDK's random suffix — nothing exotic can appear here. */
-const BLOB_PATH_RE = /^\/media\/[a-zA-Z0-9._-]{1,120}$/;
 
 /** Shared gate: every verb needs config + a valid session. */
 async function guard() {
@@ -108,7 +77,7 @@ function ascii(bytes: Uint8Array, start: number, end: number) {
  * caller write whatever they like into it. Read the container's own magic bytes
  * and only trust an upload whose header agrees with what it says it is.
  */
-function sniff(b: Uint8Array): AllowedType | null {
+function sniff(b: Uint8Array): MediaType | null {
   if (b.length >= 3 && b[0] === 0xff && b[1] === 0xd8 && b[2] === 0xff) return "image/jpeg";
   if (
     b.length >= 8 &&
@@ -130,32 +99,11 @@ function sniff(b: Uint8Array): AllowedType | null {
     const brands = ascii(b, 8, 32);
     if (brands.includes("avif") || brands.includes("avis")) return "image/avif";
   }
+  // %PDF- at offset 0. The spec tolerates leading bytes before the header, but
+  // a file that needs that tolerance is one a viewer has to guess about, and
+  // we are the ones choosing what to store — so require it at the front.
+  if (b.length >= 5 && ascii(b, 0, 5) === "%PDF-") return "application/pdf";
   return null;
-}
-
-/**
- * Filenames become URL path segments, so they get the same treatment slugs do:
- * ASCII-only, lowercase, bounded. The extension is derived from the *verified*
- * type rather than copied from the upload, so `x.png` holding a JPEG cannot
- * produce a lying url.
- */
-function safeName(raw: string, type: AllowedType) {
-  const ext = EXTENSION[type];
-  const dot = raw.lastIndexOf(".");
-  const base = dot > 0 ? raw.slice(0, dot) : raw;
-
-  let stem = base
-    .replace(/[ıİşŞğĞçÇöÖüÜ]/g, (c) => TURKISH[c] ?? c)
-    .normalize("NFKD")
-    .replace(/[\u0300-\u036f]/g, "")
-    .toLowerCase()
-    .replace(/[^a-z0-9.-]+/g, "-")
-    .replace(/-{2,}/g, "-")
-    .slice(0, 80 - ext.length - 1)
-    .replace(/^[-.]+|[-.]+$/g, "");
-
-  if (!stem) stem = "gorsel";
-  return `${stem}.${ext}`;
 }
 
 /** Never return an upstream message; log it and answer with something generic. */
@@ -186,7 +134,7 @@ export async function GET() {
     // keeps one panel load from turning into an unbounded request loop.
     for (let page = 0; page < 10; page++) {
       const res = await list({
-        prefix: PREFIX,
+        prefix: MEDIA_PREFIX,
         limit: 100,
         cursor,
         token: g.token!,
@@ -234,15 +182,23 @@ export async function POST(req: Request) {
   if (file.size === 0) {
     return NextResponse.json({ error: "Dosya boş." }, { status: 400 });
   }
-  if (file.size > MAX_UPLOAD_BYTES) {
-    return NextResponse.json({ error: "Dosya çok büyük. En fazla 4 MB." }, { status: 413 });
+  // Anything larger is supposed to have gone to /api/admin/media/token and
+  // straight to Blob from the browser, because Vercel Functions reject a body
+  // over 4.5 MB with their own opaque English 413 before this code ever runs.
+  // Reaching here with a bigger file means the client routed it wrong, so say
+  // so plainly rather than repeating a size the panel already checked.
+  if (file.size > MAX_PROXY_UPLOAD_BYTES) {
+    return NextResponse.json(
+      { error: "Bu dosya bu yoldan yüklenemeyecek kadar büyük — doğrudan yükleme kullanılmalı." },
+      { status: 413 },
+    );
   }
 
   // Strip any ";charset=" parameter before matching — the allowlist is exact.
   const declared = file.type.split(";")[0].trim().toLowerCase();
-  if (!isAllowed(declared)) {
+  if (!isMediaType(declared)) {
     return NextResponse.json(
-      { error: "Yalnızca JPEG, PNG, WebP ve AVIF yüklenebilir." },
+      { error: "Yalnızca JPEG, PNG, WebP, AVIF ve PDF yüklenebilir." },
       { status: 415 },
     );
   }
@@ -258,10 +214,12 @@ export async function POST(req: Request) {
     );
   }
 
-  const fileName = safeName(file.name || "gorsel", actual);
+  // Built from the *verified* type, not the upload's own extension, so a file
+  // called x.png holding a JPEG cannot mint a lying url.
+  const pathname = mediaPathFor(file.name || "dosya", actual);
 
   try {
-    const blob = await put(`${PREFIX}${fileName}`, file, {
+    const blob = await put(pathname, file, {
       access: "public",
       // Defaults to false on put(); without it a repeated filename throws
       // instead of quietly living alongside the first one.

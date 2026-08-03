@@ -13,7 +13,16 @@ const csp = [
   "style-src 'self' 'unsafe-inline'",
   "img-src 'self' data: blob:",
   "font-src 'self'",
-  "connect-src 'self'",
+  // 'self' plus exactly one host. A magazine PDF is routinely far past the
+  // 4.5 MB ceiling Vercel Functions put on a request body, so large uploads go
+  // from the browser straight to Blob instead of through our route — and that
+  // leg is the only thing this entry exists for. The @vercel/blob client talks
+  // to https://vercel.com/api/blob and nothing else (verified against the
+  // installed SDK: vercel.com is the only network host in its browser bundle).
+  // Deliberately NOT the *.blob.vercel-storage.com delivery host: images are
+  // still rendered through next/image, so the browser only ever fetches them
+  // same-origin from /_next/image, and img-src stays untouched.
+  "connect-src 'self' https://vercel.com",
   "object-src 'none'",
   "base-uri 'self'",
   "form-action 'self'",

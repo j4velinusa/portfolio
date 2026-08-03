@@ -88,22 +88,64 @@ for (const route of ["course", "media"]) {
   });
 }
 
-check("media uploads are capped below the platform limit", () => {
-  const src = read("src/app/api/admin/media/route.ts");
-  // Vercel Functions reject a request body over 4.5 MB with their own opaque
-  // English 413. Our cap has to fire first or the panel shows that instead of
-  // the Turkish message.
-  const m = src.match(/MAX_(?:UPLOAD|FILE)_BYTES\s*=\s*([^;]+);/);
-  assert(m, "no MAX_UPLOAD_BYTES / MAX_FILE_BYTES constant to enforce a cap");
-  // The cap is written as `4 * 1024 * 1024`, so read the arithmetic rather
-  // than the first digit — grabbing `4` would pass this check on any value.
-  const expr = m[1].replace(/_/g, "").trim();
-  assert(/^[0-9+* ]+$/.test(expr), `cap is not a plain arithmetic literal: ${m[1].trim()}`);
-  const bytes = expr
-    .split("+")
-    .reduce((sum, term) => sum + term.split("*").reduce((a, b) => a * Number(b), 1), 0);
-  assert(bytes > 0 && bytes <= 4_500_000, `cap of ${bytes} bytes is at or above Vercel's 4.5 MB limit`);
-  assert(/image\/jpeg/.test(src) && /image\/png/.test(src), "content-type allowlist is gone");
+/** `4 * 1024 * 1024` and friends — read the arithmetic, not the first digit. */
+const literalBytes = (expr) => {
+  const e = expr.replace(/_/g, "").trim();
+  assert(/^[0-9+* ]+$/.test(e), `not a plain arithmetic literal: ${expr.trim()}`);
+  return e.split("+").reduce((sum, t) => sum + t.split("*").reduce((a, b) => a * Number(b), 1), 0);
+};
+
+check("media caps and allowlist are shared by both upload paths", () => {
+  // The proxy route and the client-token route MUST agree, so the vocabulary
+  // lives in one module. If a second copy ever appears, the two paths drift and
+  // the browser starts minting names the server refuses.
+  const lib = read("src/lib/media.ts");
+
+  const proxy = lib.match(/MAX_PROXY_UPLOAD_BYTES\s*=\s*([^;]+);/);
+  assert(proxy, "MAX_PROXY_UPLOAD_BYTES is gone");
+  const proxyBytes = literalBytes(proxy[1]);
+  // Vercel Functions reject a body over 4.5 MB with their own opaque English
+  // 413; ours has to fire first or that is what the panel shows.
+  assert(
+    proxyBytes > 0 && proxyBytes <= 4_500_000,
+    `proxy cap of ${proxyBytes} bytes is at or above Vercel's 4.5 MB limit`,
+  );
+
+  const client = lib.match(/MAX_CLIENT_UPLOAD_BYTES\s*=\s*([^;]+);/);
+  assert(client, "MAX_CLIENT_UPLOAD_BYTES is gone — the client token would be unbounded");
+  assert(literalBytes(client[1]) > proxyBytes, "the direct-upload ceiling is not above the proxy cap");
+
+  for (const t of ["image/jpeg", "image/png", "image/webp", "image/avif", "application/pdf"]) {
+    assert(lib.includes(`"${t}"`), `${t} dropped from the allowlist`);
+  }
+  // A stored name is one segment under media/ — no slashes, so `..` and nested
+  // paths cannot appear in a browser-chosen pathname.
+  assert(/MEDIA_PATHNAME_RE\s*=\s*\/\^media\\\//.test(lib), "MEDIA_PATHNAME_RE no longer pins the prefix");
+
+  const route = read("src/app/api/admin/media/route.ts");
+  assert(route.includes("MAX_PROXY_UPLOAD_BYTES"), "the upload route no longer enforces the shared cap");
+  assert(route.includes("isMediaType"), "the upload route no longer enforces the shared allowlist");
+  assert(route.includes("%PDF-"), "PDF magic-byte sniffing is gone");
+});
+
+check("the client-upload token route is gated", () => {
+  const src = read("src/app/api/admin/media/token/route.ts");
+  assert(src.includes('runtime = "nodejs"'), "not pinned to the nodejs runtime");
+  assert(src.includes('dynamic = "force-dynamic"'), "not marked force-dynamic");
+  // This route hands out a credential that writes straight to the store, so the
+  // browser-facing branch needs the full gate.
+  assert(src.includes("sessionIsValid"), "no session check");
+  assert(src.includes("Bad origin"), "no Origin check");
+  // The completion callback is authenticated by its own HMAC signature inside
+  // handleUpload, which is why it is allowed to skip the session — that branch
+  // must stay explicit rather than becoming a blanket bypass.
+  assert(
+    src.includes('body.type !== "blob.upload-completed"'),
+    "the session bypass is no longer scoped to the signed completion callback",
+  );
+  assert(src.includes("MEDIA_PATHNAME_RE"), "browser-chosen pathnames are not validated");
+  assert(src.includes("maximumSizeInBytes"), "the issued token has no size ceiling");
+  assert(src.includes("allowedContentTypes"), "the issued token has no type allowlist");
 });
 
 check("course data is not filed where the post schema is enforced", () => {

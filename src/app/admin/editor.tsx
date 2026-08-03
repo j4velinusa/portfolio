@@ -2,7 +2,23 @@
 
 import { useEffect, useMemo, useRef, useState } from "react";
 import Image from "next/image";
+// The browser entry, deliberately. "@vercel/blob" is the server entry and
+// pulls node:http / undici into the client bundle, which breaks the build.
+import { upload } from "@vercel/blob/client";
 import { LANGS, type Loc } from "@/lib/i18n";
+// One allowlist and one sanitiser, shared with the two API routes. On the
+// client-token path the browser picks the stored pathname, so mediaPathFor has
+// to run here — see the note at the top of src/lib/media.ts.
+import {
+  MAX_CLIENT_UPLOAD_BYTES,
+  MAX_PROXY_UPLOAD_BYTES,
+  MEDIA_ACCEPT,
+  type MediaType,
+  isMediaType,
+  isPdf,
+  isPdfPath,
+  mediaPathFor,
+} from "@/lib/media";
 import type {
   CourseChangelogEntry,
   CourseData,
@@ -39,12 +55,6 @@ const TABS: ReadonlyArray<readonly [Tab, string]> = [
 
 /** Exactly the row GET /api/admin/media returns. `uploadedAt` is an ISO string, not a Date. */
 type MediaItem = { url: string; pathname: string; size: number; uploadedAt: string };
-
-/** The server is the real gate (4 MB, magic-byte sniffed). These exist so a
- *  rejected file gets a sentence instead of a round trip. */
-const UPLOAD_MAX = 4 * 1024 * 1024;
-const UPLOAD_TYPES = ["image/jpeg", "image/png", "image/webp", "image/avif"];
-const UPLOAD_ACCEPT = UPLOAD_TYPES.join(",");
 
 /* ---------------------------------------------------------------- course */
 
@@ -324,6 +334,34 @@ function Shot({ src }: { src: string }) {
   return (
     <div className="kurs-shot">
       <Image src={src} alt="" fill sizes="220px" style={{ objectFit: "cover" }} />
+    </div>
+  );
+}
+
+/** next/image cannot render a PDF — pointing <Image> at one gives you a broken
+ *  card and a console error — so a document blob gets this tile where a photo
+ *  would get its thumbnail. Same box as .media-shot, so a grid of mixed files
+ *  still lines up. The name and size sit just below in .media-body, which is
+ *  why they are not repeated here. Module scope like every other helper: one
+ *  defined inside the render would remount on each keystroke. */
+function DocTile({ kind }: { kind: string }) {
+  return (
+    <div className="media-doc">
+      <svg
+        className="media-doc-glyph"
+        width="26"
+        height="32"
+        viewBox="0 0 26 32"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="1.7"
+        strokeLinejoin="round"
+        aria-hidden="true"
+      >
+        <path d="M2.5 1h13l8 8v22h-21z" />
+        <path d="M15.5 1v8h8" />
+      </svg>
+      <span className="media-doc-kind">{kind}</span>
     </div>
   );
 }
@@ -636,14 +674,32 @@ export function AdminEditor() {
     }
   }
 
+  /** `upload()` collapses every token-route failure into one opaque BlobError,
+   *  so an expired session is invisible in what it throws. GET is the cheapest
+   *  authenticated call the panel has; a 401 from it means the cookie is gone.
+   *  Only ever reached on an error path. */
+  async function sessionGone(): Promise<boolean> {
+    try {
+      const r = await fetch("/api/admin/media", { cache: "no-store" });
+      return r.status === 401;
+    } catch {
+      return false;
+    }
+  }
+
   async function uploadFiles(picked: File[]) {
     if (picked.length === 0) return;
     // The server re-checks all of this (and sniffs magic bytes). This pass only
-    // exists so a wrong file gets a sentence instead of a round trip.
+    // exists so a wrong file gets a sentence instead of a round trip. It also
+    // pins the normalised type per file, which decides both the path taken and
+    // the pathname sent.
+    const queue: { file: File; type: MediaType }[] = [];
     for (const f of picked) {
-      if (!UPLOAD_TYPES.includes(f.type)) {
+      // Strip any ";charset=" parameter before matching — the allowlist is exact.
+      const type = f.type.split(";")[0].trim().toLowerCase();
+      if (!isMediaType(type)) {
         setStatus("");
-        setError(`"${f.name}": Yalnızca JPEG, PNG, WebP ve AVIF yüklenebilir.`);
+        setError(`"${f.name}": Yalnızca JPEG, PNG, WebP, AVIF ve PDF yüklenebilir.`);
         return;
       }
       if (f.size === 0) {
@@ -651,23 +707,69 @@ export function AdminEditor() {
         setError(`"${f.name}": Dosya boş.`);
         return;
       }
-      if (f.size > UPLOAD_MAX) {
+      // Two ceilings, because there are two paths. A görsel goes through our
+      // own function, which can never receive more than 4.5 MB of body; a PDF
+      // skips it entirely and only meets the panel's own limit. Saying "4 MB"
+      // for both would be a lie in one direction and a needless refusal in the
+      // other.
+      if (!isPdf(type) && f.size > MAX_PROXY_UPLOAD_BYTES) {
         setStatus("");
-        setError(`"${f.name}": Dosya çok büyük. En fazla 4 MB.`);
+        setError(`"${f.name}": Görsel çok büyük. Görsellerde en fazla 4 MB, PDF'lerde 100 MB.`);
         return;
       }
+      if (f.size > MAX_CLIENT_UPLOAD_BYTES) {
+        setStatus("");
+        setError(`"${f.name}": Dosya çok büyük. En fazla 100 MB.`);
+        return;
+      }
+      queue.push({ file: f, type });
     }
 
     setBusy(true);
     setError("");
     setStatus("");
     try {
-      for (let i = 0; i < picked.length; i++) {
-        const f = picked[i];
-        setStatus(`Yükleniyor · ${i + 1} / ${picked.length} · ${f.name}`);
+      for (let i = 0; i < queue.length; i++) {
+        const { file, type } = queue[i];
+        const where = `Yükleniyor · ${i + 1} / ${queue.length} · ${file.name}`;
+        setStatus(where);
+
+        if (file.size > MAX_PROXY_UPLOAD_BYTES) {
+          // Past the 4.5 MB Vercel Functions body cap, so this never touches
+          // our function: /api/admin/media/token authenticates the session and
+          // mints a short-lived client token, and the SDK posts to Blob itself.
+          // The pathname is chosen HERE — onBeforeGenerateToken can accept or
+          // reject it but cannot rewrite it — hence mediaPathFor.
+          try {
+            await upload(mediaPathFor(file.name, type), file, {
+              access: "public",
+              handleUploadUrl: "/api/admin/media/token",
+              contentType: type,
+              // Required for large files: split into parts, uploaded in
+              // parallel, failed parts retried.
+              multipart: true,
+              // A 40 MB upload behind a status line that never moves reads as
+              // a hang, and the obvious response to a hang is a second click.
+              onUploadProgress: ({ percentage }) => {
+                setStatus(`${where} · %${Math.round(percentage)}`);
+              },
+            });
+          } catch {
+            setStatus("");
+            if (await sessionGone()) {
+              setError("Oturum geçersiz. Tekrar giriş yap.");
+              setAuthed(false);
+            } else {
+              setError(`"${file.name}": Yüklenemedi.`);
+            }
+            return;
+          }
+          continue;
+        }
+
         const fd = new FormData();
         // No manual Content-Type — the browser has to add the multipart boundary.
-        fd.append("file", f);
+        fd.append("file", file);
         const r = await fetch("/api/admin/media", { method: "POST", body: fd });
         const d = (await r.json()) as { ok?: true; url?: string; error?: string };
         if (!r.ok) {
@@ -677,7 +779,7 @@ export function AdminEditor() {
           return;
         }
       }
-      setStatus(`${picked.length} dosya yüklendi.`);
+      setStatus(`${queue.length} dosya yüklendi.`);
       await loadMedia();
     } catch {
       setStatus("");
@@ -1310,7 +1412,7 @@ export function AdminEditor() {
             ref={fileRef}
             type="file"
             multiple
-            accept={UPLOAD_ACCEPT}
+            accept={MEDIA_ACCEPT}
             className="media-file"
             onChange={(e) => {
               const picked = Array.from(e.target.files ?? []);
@@ -1334,7 +1436,9 @@ export function AdminEditor() {
             }}
           >
             <div className="media-drop-t">Dosyaları buraya bırak · birden fazla seçebilirsin</div>
-            <div className="media-drop-m">JPEG, PNG, WebP, AVIF · en fazla 4 MB</div>
+            <div className="media-drop-m">
+              Görsel (JPEG, PNG, WebP, AVIF) en fazla 4 MB · PDF en fazla 100 MB
+            </div>
           </div>
 
           {!mediaLoaded && <p className="admin-count">Liste yükleniyor…</p>}
@@ -1343,45 +1447,66 @@ export function AdminEditor() {
           )}
 
           <div className="media-grid">
-            {media.map((m) => (
-              <div key={m.url} className="media-card">
-                <div className="media-shot">
-                  <Image
-                    src={m.url}
-                    alt=""
-                    fill
-                    sizes="(max-width: 700px) 45vw, 220px"
-                    style={{ objectFit: "cover" }}
-                  />
+            {media.map((m) => {
+              // The route derives the extension from verified magic bytes, so
+              // a `.pdf` on a stored pathname is evidence, not a claim.
+              const pdf = isPdfPath(m.pathname);
+              return (
+                <div key={m.url} className="media-card">
+                  {pdf ? (
+                    <DocTile kind="PDF" />
+                  ) : (
+                    <div className="media-shot">
+                      <Image
+                        src={m.url}
+                        alt=""
+                        fill
+                        sizes="(max-width: 700px) 45vw, 220px"
+                        style={{ objectFit: "cover" }}
+                      />
+                    </div>
+                  )}
+                  <div className="media-body">
+                    <div className="media-name" title={fileNameOf(m.pathname)}>
+                      {fileNameOf(m.pathname)}
+                    </div>
+                    <div className="media-meta">
+                      {formatSize(m.size)} · {formatWhen(m.uploadedAt)}
+                    </div>
+                    <div className="media-acts">
+                      <button
+                        type="button"
+                        className="kurs-mini"
+                        onClick={() => copyUrl(m.url)}
+                        title={m.url}
+                      >
+                        Kopyala
+                      </button>
+                      {pdf && (
+                        // There is no thumbnail to judge a PDF by, so the only
+                        // way to check you grabbed the right issue is to open it.
+                        <a
+                          className="kurs-mini media-doc-open"
+                          href={m.url}
+                          target="_blank"
+                          rel="noreferrer"
+                        >
+                          Aç
+                        </a>
+                      )}
+                      <button
+                        type="button"
+                        className="kurs-mini danger"
+                        disabled={busy}
+                        onClick={() => removeMedia(m)}
+                      >
+                        Sil
+                      </button>
+                    </div>
+                  </div>
                 </div>
-                <div className="media-body">
-                  <div className="media-name" title={fileNameOf(m.pathname)}>
-                    {fileNameOf(m.pathname)}
-                  </div>
-                  <div className="media-meta">
-                    {formatSize(m.size)} · {formatWhen(m.uploadedAt)}
-                  </div>
-                  <div className="media-acts">
-                    <button
-                      type="button"
-                      className="kurs-mini"
-                      onClick={() => copyUrl(m.url)}
-                      title={m.url}
-                    >
-                      Kopyala
-                    </button>
-                    <button
-                      type="button"
-                      className="kurs-mini danger"
-                      disabled={busy}
-                      onClick={() => removeMedia(m)}
-                    >
-                      Sil
-                    </button>
-                  </div>
-                </div>
-              </div>
-            ))}
+              );
+            })}
           </div>
         </section>
       )}

@@ -160,6 +160,12 @@ function imageOf(v: unknown, field: string): string {
   if (v.length > MAX_IMAGE_PATH) {
     throw new Invalid(`${field}.image çok uzun (en fazla ${MAX_IMAGE_PATH} karakter).`);
   }
+  // The media library holds PDFs too now, and these slots render through
+  // next/image, which cannot display one. src/lib/course.ts drops such a row
+  // with only a console.warn, so refuse it here where the panel can say why.
+  if (!/\.(?:jpe?g|png|webp|avif)$/i.test(v)) {
+    throw new Invalid(`${field}.image bir görsel olmalı (jpg, png, webp veya avif) — PDF kullanılamaz.`);
+  }
 
   if (v.startsWith("/")) {
     if (v.startsWith("//") || v.includes("..") || !REL_IMAGE_RE.test(v)) {

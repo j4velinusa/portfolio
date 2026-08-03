@@ -156,8 +156,16 @@ function loc(v: unknown, max: number): Loc | null {
 const isId = (v: unknown): v is string =>
   typeof v === "string" && v.length > 0 && v.length <= 40 && /^[A-Za-z0-9][A-Za-z0-9_-]*$/.test(v);
 
-/** The media library uploads here, so the loader has to accept what it returns. */
-const BLOB_HOST_RE = /^[a-z0-9]+\.public\.blob\.vercel-storage\.com$/;
+import { BLOB_HOST_RE } from "@/lib/media";
+
+/**
+ * The media library also stores PDFs now, and every image on the course page
+ * goes through next/image, which cannot render one. A PDF url reaching a
+ * gallery slot would render a broken box, so the extension is part of the
+ * check — and it can be trusted, because the upload route derives it from the
+ * file's verified magic bytes rather than from whatever the client called it.
+ */
+const IMAGE_EXT_RE = /\.(?:jpe?g|png|webp|avif)$/i;
 
 /**
  * Either a root-relative path or an image on our own Vercel Blob store.
@@ -176,6 +184,7 @@ const BLOB_HOST_RE = /^[a-z0-9]+\.public\.blob\.vercel-storage\.com$/;
 const isImagePath = (v: unknown): v is string => {
   if (typeof v !== "string" || v.length < 2 || v.length > 200) return false;
   if (v.startsWith("//") || v.includes("..")) return false;
+  if (!IMAGE_EXT_RE.test(v)) return false;
   if (v.startsWith("/")) return /^\/[A-Za-z0-9._\-/]+$/.test(v);
   try {
     const u = new URL(v);
