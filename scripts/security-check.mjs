@@ -49,11 +49,42 @@ check("jsonLdSafe neutralises a </script> breakout", () => {
 });
 
 // --- the session key must not be the password -----------------------------
-check("session cookie is not signed with ADMIN_PASSWORD", () => {
-  const src = read("src/lib/admin-auth.ts");
-  assert(src.includes("SESSION_SECRET"), "SESSION_SECRET is not used");
-  const signLine = src.split("\n").find((l) => l.includes("createHmac"));
-  assert(signLine && !signLine.includes("adminPassword"), "HMAC is keyed with the password");
+check("session tokens are not signed with a password", () => {
+  // Assert against CODE, not prose. These files explain themselves at length
+  // and a doc comment quoting the old broken pattern tripped this check the
+  // first time it ran — worse, a comment could just as easily have satisfied a
+  // must-contain assertion that the code no longer met.
+  const stripComments = (s) =>
+    s
+      .split("\n")
+      .filter((l) => !/^\s*(\/\/|\*|\/\*)/.test(l))
+      .join("\n");
+
+  const lib = stripComments(read("src/lib/signed-token.ts"));
+  assert(lib.includes("SESSION_SECRET"), "SESSION_SECRET is not used");
+  const signLine = lib.split("\n").find((l) => l.includes("createHmac"));
+  assert(signLine, "no createHmac in the signed-token primitive");
+  assert(!/password/i.test(signLine), "the HMAC is keyed with a password");
+
+  // One key signs admin, subscriber and magic-link tokens, so the kind has to
+  // be inside the signed payload — otherwise a subscriber cookie verifies
+  // perfectly as an admin cookie.
+  assert(/k:\s*kind/.test(lib), "the token kind is not bound into the signed payload");
+  assert(/c\.k\s*!==\s*kind/.test(lib), "readToken does not check the token kind");
+
+  // JSON.parse must never touch bytes that have not been authenticated yet.
+  assert(
+    lib.indexOf("timingSafeEqual") < lib.indexOf("JSON.parse"),
+    "the payload is parsed before the MAC is verified",
+  );
+
+  // The payload is base64url precisely so exactly one "." can appear. A
+  // split()-based reader silently drops later segments of a forged token.
+  assert(!/\.split\("\."\)/.test(lib), "readToken went back to split('.')");
+
+  // admin-auth must not grow a second, weaker signer of its own.
+  const admin = stripComments(read("src/lib/admin-auth.ts"));
+  assert(!admin.includes("createHmac"), "admin-auth signs tokens itself instead of using the shared primitive");
 });
 
 // --- publish endpoint invariants ------------------------------------------
