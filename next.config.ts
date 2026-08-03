@@ -56,15 +56,16 @@ const nextConfig: NextConfig = {
     // does the remote fetch server-side, where CSP does not apply. `img-src
     // 'self'` stays as tight as it was.
     //
-    // `*` matches exactly one subdomain label, which is the <storeId>. Worth
-    // narrowing to the literal store hostname once it is known — it is a stable
-    // per-store constant, and the wildcard currently also admits any other
-    // Vercel customer's public store.
+    // Pinned to this store rather than `*.public.blob.vercel-storage.com`: the
+    // wildcard would also admit every other Vercel customer's public store. The
+    // id is a stable per-store constant. If a second store is ever added, this
+    // is the line that has to learn about it — the symptom will be images that
+    // 400 at /_next/image while the raw blob url loads fine.
     remotePatterns: [
       {
         protocol: "https",
-        hostname: "*.public.blob.vercel-storage.com",
-        pathname: "/**",
+        hostname: "9v74rwzgo503lzd6.public.blob.vercel-storage.com",
+        pathname: "/media/**",
         // No query strings: an <Image> src carrying `?v=` would be a cache
         // buster we never emit, so refuse it rather than optimize it.
         search: "",
