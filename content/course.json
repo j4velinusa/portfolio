@@ -9,10 +9,26 @@
     "tr": "Kursu al"
   },
   "hero": [
-    { "id": "h1", "image": "/courses/riviera-01.jpg" },
-    { "id": "h2", "image": "/courses/riviera-02.jpg" },
-    { "id": "h3", "image": "/courses/riviera-03.jpg" },
-    { "id": "h4", "image": "/courses/riviera-04.jpg" }
+    {
+      "id": "h1",
+      "image": "https://9v74rwzgo503lzd6.public.blob.vercel-storage.com/media/riviera-poster-01-bodrum-watermarked-1-PXhNj2UBptLtqD4pWp4wfT1nhpbgQ4.png"
+    },
+    {
+      "id": "h2",
+      "image": "https://9v74rwzgo503lzd6.public.blob.vercel-storage.com/media/riviera-page-04-mavinin-envanteri-w5mpf8BCCS9jxse3cXFS4JnK2CKKLr.png"
+    },
+    {
+      "id": "h3",
+      "image": "https://9v74rwzgo503lzd6.public.blob.vercel-storage.com/media/chatgpt-image-1-agu-2026-18-17-14-XaYp5V2Rs3Lhgtg5TFXdBxiXysieE2.png"
+    },
+    {
+      "id": "h4",
+      "image": "https://9v74rwzgo503lzd6.public.blob.vercel-storage.com/media/chatgpt-image-1-agu-2026-18-18-25-2-A5G049A1PLTAQjE8O9azMo230Udm1i.png"
+    },
+    {
+      "id": "h5",
+      "image": "https://9v74rwzgo503lzd6.public.blob.vercel-storage.com/media/chatgpt-image-1-agu-2026-18-18-04-4qsypgjTvHM0Lizr0UPQI4GOeckEwh.png"
+    }
   ],
   "gallery": [
     {
