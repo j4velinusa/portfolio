@@ -32,6 +32,10 @@ yarn-error.log*
 
 # env files (can opt-in for committing if needed)
 .env*
+# ...and this is that opt-in. The example holds no secrets, only the names of
+# the variables and why each exists — which is the one thing a fresh clone or a
+# new deployment environment has no other way to discover.
+!.env.example
 
 # vercel
 .vercel

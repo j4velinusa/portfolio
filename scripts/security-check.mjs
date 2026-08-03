@@ -179,6 +179,28 @@ check("the client-upload token route is gated", () => {
   assert(src.includes("allowedContentTypes"), "the issued token has no type allowlist");
 });
 
+check("the magic-link flow cannot be replayed or aimed elsewhere", () => {
+  const link = read("src/app/api/auth/link/route.ts");
+  assert(link.includes('runtime = "nodejs"'), "link route is not pinned to nodejs");
+  assert(link.includes("Bad origin"), "link route has no Origin check");
+  assert(link.includes("MAX_PENDING_LINKS"), "link route no longer rate-limits sends");
+  // Only the hash is stored, so a database dump holds no working links.
+  assert(link.includes("tokenHash"), "the raw token is being stored instead of its hash");
+  assert(!/INSERT INTO login_token[\s\S]{0,120}link\.token[^H]/.test(link), "the raw token reaches the insert");
+
+  const verify = read("src/app/api/auth/verify/route.ts");
+  // Single-use is the atomic DELETE. A SELECT-then-DELETE lets two concurrent
+  // redemptions of one link both succeed.
+  assert(/DELETE FROM login_token[\s\S]*RETURNING/.test(verify), "verify no longer consumes the token atomically");
+  assert(verify.includes("sha256(token)"), "verify does not look the token up by hash");
+  // The redirect target must come from the signed payload, never the URL.
+  assert(/link\.lang/.test(verify), "the redirect no longer uses the signed lang");
+  assert(
+    !/searchParams\.get\((["'])(next|redirect|return|url)\1\)/.test(verify),
+    "verify takes a redirect target from the query string — that is an open redirect",
+  );
+});
+
 check("course data is not filed where the post schema is enforced", () => {
   // content/posts/*.json is walked by the post check below, which requires a
   // slug/title/body/date. course.json has none of those and would hard-fail.
