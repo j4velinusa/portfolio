@@ -29,39 +29,39 @@
   "gallery": [
     {
       "id": "g1",
-      "image": "/courses/riviera-05.jpg",
+      "image": "https://9v74rwzgo503lzd6.public.blob.vercel-storage.com/media/riviera-page-25-brl-200-yuksek-guvenlik-bareli-16ozsPFFOBS4I1f76NcePAi73kqbYD.png",
       "alt": {
-        "en": "A narrow turquoise water channel running through a cream stucco wall towards an arched opening, with a palm leaning in.",
-        "tr": "Krem sıvalı bir duvarın içinden kemerli bir açıklığa doğru uzanan dar turkuaz su kanalı; kenarda bir palmiye."
+        "en": "High-security door lock cylinder with water droplets on its brushed metal surface, resting on a textured blue surface next to scattered crystal particles.",
+        "tr": "Fırçalanmış metal yüzeyinde su damlaları bulunan yüksek güvenlikli kapı kilit bareli, etrafına saçılmış kristal tanecikleriyle birlikte mavi dokulu bir zemin üzerinde duruyor."
       }
     },
     {
       "id": "g2",
-      "image": "/courses/riviera-06.jpg",
+      "image": "https://9v74rwzgo503lzd6.public.blob.vercel-storage.com/media/riviera-page-04-mavinin-envanteri-w5mpf8BCCS9jxse3cXFS4JnK2CKKLr.png",
       "alt": {
-        "en": "Watercolour view straight down onto a green tiled courtyard pool, a leopard stepping into the water between plants and a pink towel.",
-        "tr": "Yeşil çinili bir avlu havuzuna tepeden bakan suluboya; bitkiler ve pembe bir havlunun arasında suya adım atan bir leopar."
+        "en": "Geometric abstract painting from a top-down perspective, featuring overlapping rectangular tiles in various shades of blue and turquoise, with a dark tree shadow falling across the right side.",
+        "tr": "Farklı mavi ve turkuaz tonlarındaki üst üste binen dikdörtgen karoların yer aldığı, sağ tarafına koyu bir ağaç gölgesinin düştüğü kuşbakışı geometrik soyut resim."
       }
     },
     {
       "id": "g3",
-      "image": "/courses/riviera-03.jpg",
+      "image": "https://9v74rwzgo503lzd6.public.blob.vercel-storage.com/media/claviscor-catalog-lgt-730-recessed-downlight-v1-m2GUN9z0KJJoBs5fcZRRNFWu9eenws.png",
       "alt": {
-        "en": "Illustration of a vinyl record whose turquoise grooves read as pool water, with three koi swimming across the red centre label.",
-        "tr": "Turkuaz oyukları havuz suyu gibi okunan bir plak illüstrasyonu; kırmızı etiketin çevresinde yüzen üç koi balığı."
+        "en": "Textured beige ceiling and curved wall corner illuminated by a black recessed adjustable downlight.",
+        "tr": "Siyah renkli, ayarlanabilir gömme tavan spotuyla aydınlatılmış, dokulu bej tavan ve kavisli duvar köşesi."
       }
     },
     {
       "id": "g4",
-      "image": "/courses/riviera-04.jpg",
+      "image": "https://9v74rwzgo503lzd6.public.blob.vercel-storage.com/media/claviscor-catalog-clg-720-metal-baffle-ceiling-v1-k6rR68vF6raGiHia3zkDSVL0eep3Qy.png",
       "alt": {
-        "en": "Blue and white tile mosaic of two swimmers, one diving, one surfacing, beside an orange lane rope.",
-        "tr": "Turuncu bir kulvar şamandırasının yanında biri dalan biri suya çıkan iki yüzücünün mavi-beyaz çini mozaiği."
+        "en": "Modern interior featuring a dark linear metal baffle ceiling, board-formed concrete walls, dark wood paneling, and sunlight casting shadows across the stone floor.",
+        "tr": "Koyu renkli doğrusal metal bölmeli asma tavan, brüt beton duvarlar, koyu ahşap panel kaplama ve taş zemin üzerine düşen güneş ışığı gölgelerinin yer aldığı modern iç mekan."
       }
     },
     {
       "id": "g5",
-      "image": "/courses/riviera-01.jpg",
+      "image": "https://9v74rwzgo503lzd6.public.blob.vercel-storage.com/media/chatgpt-image-1-agu-2026-18-18-25-2-A5G049A1PLTAQjE8O9azMo230Udm1i.png",
       "alt": {
         "en": "Painted overhead view of a varnished wooden speedboat cutting a white wake across deep blue water, two people aboard.",
         "tr": "Koyu mavi suda beyaz bir iz bırakan cilalı ahşap sürat teknesinin tepeden resmi; güvertede iki kişi."
@@ -69,10 +69,10 @@
     },
     {
       "id": "g6",
-      "image": "/courses/riviera-02.jpg",
+      "image": "https://9v74rwzgo503lzd6.public.blob.vercel-storage.com/media/claviscor-catalog-acc-610-magnetic-door-stop-v1-igkoyqXaYc1q2SmvIZpug2JTiwXFdU.png",
       "alt": {
-        "en": "Two-colour risograph-style beach print: cobalt palm silhouettes over cream sand, small orange parasols along the shore.",
-        "tr": "İki renkli rizograf tarzı sahil baskısı: krem kumun üzerinde kobalt palmiye siluetleri, kıyı boyunca küçük turuncu şemsiyeler."
+        "en": "Satin metal magnetic door stop mounted on a terracotta tiled floor, holding open a rustic green wooden door against a warm textured wall.",
+        "tr": "Pişmiş toprak döşeli zemin üzerine monte edilmiş, rustik yeşil ahşap bir kapıyı sıcak tonlu dokulu bir duvara karşı açık tutan saten metal manyetik kapı tutucu."
       }
     }
   ],
