@@ -23,6 +23,13 @@ const csp = [
   // still rendered through next/image, so the browser only ever fetches them
   // same-origin from /_next/image, and img-src stays untouched.
   "connect-src 'self' https://vercel.com",
+  // The course player. Without this the policy falls back to default-src
+  // 'self' and the Bunny iframe is refused with no visible cause — the frame
+  // is simply blank. One host, and deliberately not the pull zone
+  // (vz-de08c60a-1e5.b-cdn.net): the embed player fetches the video itself,
+  // from inside the frame, where our policy does not reach. Self-hosting
+  // hls.js instead would have needed four directives and two blob: allowances.
+  "frame-src 'self' https://player.mediadelivery.net",
   "object-src 'none'",
   "base-uri 'self'",
   "form-action 'self'",

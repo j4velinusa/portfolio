@@ -215,6 +215,29 @@ check("the magic-link flow cannot be replayed or aimed elsewhere", () => {
   );
 });
 
+check("playback tokens are signed server-side and expire in seconds", () => {
+  const src = read("src/lib/bunny.ts");
+  assert(src.includes("BUNNY_TOKEN_SECURITY_KEY"), "the security key is no longer read from the environment");
+  // Anyone holding the key can sign their own URLs for every video in the
+  // library, forever. It must never be inlined into the client bundle.
+  assert(!/NEXT_PUBLIC/.test(src), "a NEXT_PUBLIC_ variable appeared in the signing module");
+  // Date.now() is milliseconds and Bunny wants seconds. Passing it straight
+  // through mints a token that outlives the business.
+  assert(
+    /Math\.floor\(Date\.now\(\) \/ 1000\)/.test(src),
+    "the expiry is no longer converted from milliseconds to seconds",
+  );
+  assert(src.includes("isBunnyVideoId"), "video ids are not validated before being put in a URL");
+
+  const cfg = read("next.config.ts");
+  // Without this the CSP falls back to default-src 'self' and the player is a
+  // blank frame with no error anywhere.
+  assert(
+    /frame-src[^"]*player\.mediadelivery\.net/.test(cfg),
+    "frame-src no longer allows the Bunny player",
+  );
+});
+
 check("course data is not filed where the post schema is enforced", () => {
   // content/posts/*.json is walked by the post check below, which requires a
   // slug/title/body/date. course.json has none of those and would hard-fail.
