@@ -118,7 +118,12 @@ export async function POST(req: Request) {
       VALUES (${link.tokenHash}, ${email}, ${link.expiresAt.toISOString()})
     `;
 
-    const url = `${self}/api/auth/verify?t=${encodeURIComponent(link.token)}`;
+    // Points at a PAGE, not at the consuming endpoint. Mail providers open
+    // links in incoming email to scan them, and when this pointed straight at
+    // the GET verifier the scanner spent the token before the recipient ever
+    // clicked — observed in production on the first real send. The page only
+    // renders a button; the POST behind it is what consumes.
+    const url = `${self}/${lang}/courses/giris?t=${encodeURIComponent(link.token)}`;
     const c = COPY[lang];
 
     const res = await fetch("https://api.resend.com/emails", {

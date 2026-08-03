@@ -16,27 +16,49 @@ export const dynamic = "force-dynamic";
 /**
  * Consumes a magic link and starts a subscriber session.
  *
- * GET, because it is reached by clicking a link in an email. That makes it the
- * one endpoint here without CSRF protection, which is fine only because it is
- * not a state-changing action an attacker can aim at a victim: the worst a
- * forged visit achieves is burning a token the attacker already holds. A
- * genuine link is unforgeable (HMAC) and single-use (the DELETE below).
+ * POST, AND THAT IS THE WHOLE POINT. This was a GET reached straight from the
+ * email, and it did not survive contact with a real inbox: Gmail visits links
+ * in incoming mail to scan them, so the token was consumed by a crawler before
+ * the human ever clicked, and the human got "already used". Verified in
+ * production, on the first real send.
  *
- * The redirect target comes from the signed payload, never from the query
- * string — a redirect that trusts its own URL is an open redirect.
+ * So the email now points at /[lang]/courses/giris, a page that only reads the
+ * token and renders a button. Consuming happens here, on the POST that button
+ * submits. Scanners issue GET; they land on the page, and nothing is spent.
+ *
+ * The cost is one extra click, which is the standard price for this and is
+ * cheap next to a sign-in flow that silently fails for every Gmail user.
+ *
+ * The form is a plain HTML form — no JavaScript — so this also works with
+ * scripting disabled, and `form-action 'self'` in the CSP already permits it.
  */
-export async function GET(req: Request) {
+export async function POST(req: Request) {
   const self = process.env.SITE_ORIGIN ?? SITE_URL;
+  const back = (lang: string, status: string) =>
+    NextResponse.redirect(`${self}/${lang}/courses?giris=${status}`, 303);
 
-  if (!dbConfigured() || !process.env.SESSION_SECRET) {
-    return NextResponse.redirect(`${self}/tr/courses?giris=yapilandirilmamis`, 303);
+  const origin = req.headers.get("origin");
+  if (origin && origin !== self) {
+    return NextResponse.json({ error: "Bad origin" }, { status: 403 });
   }
 
-  const token = new URL(req.url).searchParams.get("t") ?? undefined;
+  if (!dbConfigured() || !process.env.SESSION_SECRET) {
+    return back("tr", "yapilandirilmamis");
+  }
+
+  let token: string | undefined;
+  try {
+    const form = await req.formData();
+    const t = form.get("t");
+    token = typeof t === "string" ? t : undefined;
+  } catch {
+    return back("tr", "gecersiz");
+  }
+
   const link = readLoginLink(token);
   if (!link || !token) {
     // Expired and forged are the same answer on purpose.
-    return NextResponse.redirect(`${self}/tr/courses?giris=gecersiz`, 303);
+    return back("tr", "gecersiz");
   }
 
   try {
@@ -51,7 +73,7 @@ export async function GET(req: Request) {
       RETURNING email
     `;
     if (consumed.length === 0) {
-      return NextResponse.redirect(`${self}/${link.lang}/courses?giris=kullanilmis`, 303);
+      return back(link.lang, "kullanilmis");
     }
 
     // Trust the row, not the token: the address that was stored when the link
@@ -71,9 +93,9 @@ export async function GET(req: Request) {
     const jar = await cookies();
     jar.set(SUBSCRIBER_COOKIE, issueSubscriberSession(subscriberId, email), subscriberCookieOptions);
 
-    return NextResponse.redirect(`${self}/${link.lang}/courses?giris=tamam`, 303);
+    return back(link.lang, "tamam");
   } catch (e) {
     console.error("[auth/verify] unexpected", e);
-    return NextResponse.redirect(`${self}/${link.lang}/courses?giris=hata`, 303);
+    return back(link.lang, "hata");
   }
 }

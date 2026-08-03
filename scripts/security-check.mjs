@@ -188,7 +188,21 @@ check("the magic-link flow cannot be replayed or aimed elsewhere", () => {
   assert(link.includes("tokenHash"), "the raw token is being stored instead of its hash");
   assert(!/INSERT INTO login_token[\s\S]{0,120}link\.token[^H]/.test(link), "the raw token reaches the insert");
 
+  // The email must not point at the consuming endpoint: a mail provider's link
+  // scanner opens it and spends the token before the recipient clicks.
+  assert(!/api\/auth\/verify\?t=/.test(link), "the emailed link points straight at the consumer again");
+  assert(/courses\/giris\?t=/.test(link), "the emailed link no longer points at the confirmation page");
+
   const verify = read("src/app/api/auth/verify/route.ts");
+  // POST only. A GET consumer is what the scanner problem was.
+  assert(/export async function POST/.test(verify), "verify is not a POST handler");
+  assert(!/export async function GET/.test(verify), "verify grew a GET handler — scanners will spend tokens again");
+
+  // The confirmation page must read the token without consuming it.
+  const page = read("src/app/[lang]/courses/giris/page.tsx");
+  assert(page.includes("readLoginLink"), "the confirmation page does not validate the token");
+  assert(!/DELETE FROM/.test(page), "the confirmation page consumes the token — that is the bug this fixed");
+  assert(/method="POST"/.test(page), "the confirmation form is not a POST");
   // Single-use is the atomic DELETE. A SELECT-then-DELETE lets two concurrent
   // redemptions of one link both succeed.
   assert(/DELETE FROM login_token[\s\S]*RETURNING/.test(verify), "verify no longer consumes the token atomically");

@@ -8,6 +8,7 @@ import { site } from "@/content/site";
 import { courseCopy } from "@/content/courses";
 import { getCourse, totalLessons, fillCounts, type CourseData } from "@/lib/course";
 import { CourseJsonLd } from "@/components/JsonLd";
+import { rivieraTheme } from "@/lib/riviera";
 
 // Loaded only by this route, so the dark chrome pages never fetch them. Both
 // carry `latin-ext` because the page is Turkish-first (zekâ, İçindekiler, ₺).
@@ -86,28 +87,8 @@ export default async function CoursesPage({ params }: { params: Promise<{ lang: 
   // noun the stats band uses, so it is read from there instead of hardcoded.
   const lessonWord = courseCopy.stats[0].label[lang];
 
-  // The site chrome is hard black; this page is warm paper. Redeclaring the
-  // tokens on this one wrapper shadows :root for this subtree only — no other
-  // route is touched. --line/--line2 MUST be dark alphas here or every border,
-  // card edge and section rule inherits a white alpha and vanishes on paper.
-  const themeVars = {
-    "--bg": "#F1EFEA",
-    "--bg2": "#FBFAF7",
-    "--surface": "#FBFAF7",
-    "--surface2": "#FFFFFF",
-    "--text": "#1C1B19",
-    "--muted": "#5C5749",
-    "--dim": "#8E897D",
-    "--accent": "#137A63",
-    "--accent2": "#5FCBAA",
-    "--deep": "#0E3A2E",
-    "--sand": "#E7E4DD",
-    "--line": "rgba(28, 27, 25, 0.07)",
-    "--line2": "rgba(28, 27, 25, 0.16)",
-  } as React.CSSProperties;
-
   return (
-    <div className={`riviera ${display.variable} ${ui.variable}`} style={themeVars}>
+    <div className={`riviera ${display.variable} ${ui.variable}`} style={rivieraTheme}>
       {/* No `price`: the only price we hold is a localised display string
           ("₺1.000 / ay" vs "₺1,000 / month"), and guessing a number out of it
           would mean deciding whether "1.000" is one or a thousand. A Course
