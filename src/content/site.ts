@@ -11,6 +11,32 @@ export const site = {
     contact: { en: "Contact", tr: "İletişim" } as Bi,
     cv: { en: "CV", tr: "CV" } as Bi,
     blog: { en: "Notes", tr: "Gündem" } as Bi,
+    courses: { en: "Courses", tr: "Kurs" } as Bi,
+  },
+
+  /**
+   * The two home-page doorways into the course. The course itself is a
+   * sub-brand with its own palette and its own page — this is only the
+   * invitation, so the copy lives here with the rest of the home chrome
+   * rather than in src/content/courses.ts.
+   */
+  course: {
+    pill: {
+      en: "I also teach art direction with AI",
+      tr: "Yapay zekâ ile sanat yönetmenliği de öğretiyorum",
+    } as Bi,
+    pillCta: { en: "Riviera Aesthetic ›", tr: "Riviera Aesthetic ›" } as Bi,
+    // Caps are authored, not applied by CSS — see .course-tile-eyebrow.
+    eyebrow: { en: "COURSE · RIVIERA AESTHETIC", tr: "KURS · RIVIERA AESTHETIC" } as Bi,
+    title: {
+      en: "Art direction with AI, taught properly.",
+      tr: "Yapay zekâ ile sanat yönetmenliği, hakkıyla öğretilmiş.",
+    } as Bi,
+    blurb: {
+      en: "Magazines for luxury brands, campaign sets, interfaces. 28 lessons — new ones every month.",
+      tr: "Lüks markalar için dergiler, kampanya setleri, arayüzler. 28 ders — her ay yenisi.",
+    } as Bi,
+    cta: { en: "See the course ›", tr: "Kursa göz at ›" } as Bi,
   },
 
   hero: {

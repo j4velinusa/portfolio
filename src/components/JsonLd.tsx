@@ -67,6 +67,70 @@ export function PersonJsonLd({ lang }: { lang: Lang }) {
   );
 }
 
+/**
+ * Course. Deliberately narrower than what Google will accept: a CourseInstance
+ * needs a real schedule or workload to be eligible for the rich result, and we
+ * do not have honest values for either — "new lessons every month" is not a
+ * schedule. Claiming one to win a rich result would be structured-data spam,
+ * so the instance is omitted and the plain Course is emitted instead.
+ *
+ * `price` is the numeric monthly figure, kept separate from the display string
+ * in content/course.json ("₺1.000 / ay"): schema.org wants a number, and
+ * parsing a localised, owner-editable string to get one would break the first
+ * time someone typed a thousands separator differently.
+ */
+export function CourseJsonLd({
+  lang,
+  name,
+  description,
+  price,
+  modules,
+}: {
+  lang: Lang;
+  name: string;
+  description: string;
+  price: number | null;
+  modules: { name: string; description: string }[];
+}) {
+  const data = {
+    "@context": "https://schema.org",
+    "@type": "Course",
+    name,
+    description,
+    inLanguage: lang,
+    url: `${SITE_URL}/${lang}/courses`,
+    provider: { "@type": "Person", "@id": `${SITE_URL}/#person`, name: site.name },
+    ...(modules.length
+      ? {
+          syllabusSections: modules.map((m) => ({
+            "@type": "Syllabus",
+            name: m.name,
+            description: m.description,
+          })),
+        }
+      : {}),
+    ...(price !== null
+      ? {
+          offers: {
+            "@type": "Offer",
+            category: "Subscription",
+            price,
+            priceCurrency: "TRY",
+            availability: "https://schema.org/InStock",
+            url: `${SITE_URL}/${lang}/courses`,
+          },
+        }
+      : {}),
+  };
+
+  return (
+    <script
+      type="application/ld+json"
+      dangerouslySetInnerHTML={{ __html: jsonLdSafe(data) }}
+    />
+  );
+}
+
 export function ProjectJsonLd({ slug, lang }: { slug: string; lang: Lang }) {
   const p = projects.find((x) => x.slug === slug);
   if (!p) return null;

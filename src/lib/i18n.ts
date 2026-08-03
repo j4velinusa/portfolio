@@ -5,6 +5,10 @@ export type Lang = (typeof LANGS)[number];
 /** A value that exists in both languages. */
 export type Bi<T = string> = { en: T; tr: T };
 
+/** A value that exists in every locale. Unlike Bi it widens with LANGS, so
+ *  adding a language turns every missing translation into a type error. */
+export type Loc<T = string> = Record<Lang, T>;
+
 export const DEFAULT_LANG: Lang = "en";
 
 export const isLang = (v: string): v is Lang => (LANGS as readonly string[]).includes(v);

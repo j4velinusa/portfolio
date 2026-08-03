@@ -9,6 +9,7 @@ import { Nav } from "@/components/Nav";
 import { RevealProvider } from "@/components/Reveal";
 import { Contact } from "@/components/Contact";
 import { PersonJsonLd } from "@/components/JsonLd";
+import { getCourse } from "@/lib/course";
 
 export async function generateMetadata({
   params,
@@ -27,6 +28,9 @@ export default async function Home({ params }: { params: Promise<{ lang: string 
 
   const featured = projects.find((p) => p.slug === "xaron")!;
   const dravion = projects.find((p) => p.slug === "dravion")!;
+  // The price is owner-editable, so the tile reads it from the same source the
+  // course page does rather than repeating it here and drifting.
+  const course = getCourse();
 
   return (
     <>
@@ -41,6 +45,11 @@ export default async function Home({ params }: { params: Promise<{ lang: string 
         </span>
         <h1 className="grad-text">{site.hero.title}</h1>
         <p className="sub">{site.hero.subtitle[lang]}</p>
+
+        <Link href={`/${lang}/courses`} className="course-pill">
+          <span className="course-pill-label">{site.course.pill[lang]}</span>
+          <span className="course-pill-cta">{site.course.pillCta[lang]}</span>
+        </Link>
       </header>
 
       <section className="section">
@@ -109,7 +118,28 @@ export default async function Home({ params }: { params: Promise<{ lang: string 
             <div style={{ fontSize: 16, fontWeight: 700 }}>{site.bento.location[lang]}</div>
             <div className="small">{site.bento.locationSub[lang]}</div>
           </div>
+
         </div>
+
+        {/* The one warm surface on a black page — a doorway into the course
+            sub-brand, so it borrows that palette rather than this one.
+
+            Deliberately a sibling of .bento rather than a cell inside it: the
+            grid pins every row to 158px and .tile clips overflow, so as a cell
+            this lost 6px of its CTA the moment the blurb ran to two lines. Out
+            here it sizes to its content, which is what a block of prose that
+            gets translated into more languages needs. */}
+        <Link href={`/${lang}/courses`} className="tile course reveal" data-d="270">
+          <div className="course-tile-main">
+            <div className="course-tile-eyebrow">{site.course.eyebrow[lang]}</div>
+            <div className="course-tile-title">{site.course.title[lang]}</div>
+            <div className="course-tile-blurb">{site.course.blurb[lang]}</div>
+          </div>
+          <div className="course-tile-side">
+            <div className="course-tile-price">{course.price[lang]}</div>
+            <span className="course-tile-cta">{site.course.cta[lang]}</span>
+          </div>
+        </Link>
       </section>
 
       {/* work */}

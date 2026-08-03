@@ -38,7 +38,10 @@ check("JSON-LD is escaped everywhere it is injected", () => {
 
 check("jsonLdSafe neutralises a </script> breakout", () => {
   const src = read("src/components/JsonLd.tsx");
-  const m = src.match(/export const jsonLdSafe[\s\S]*?;\n/);
+  // `\r?` because a Windows working copy checks out CRLF: without it this
+  // check reports "jsonLdSafe not found" on every local run and stops being
+  // something anyone trusts, while still passing in LF-land on CI.
+  const m = src.match(/export const jsonLdSafe[\s\S]*?;\r?\n/);
   assert(m, "jsonLdSafe not found");
   for (const ch of ["<", ">", "&"]) {
     assert(m[0].includes(`/${ch}/g`), `jsonLdSafe does not escape ${ch}`);
@@ -67,6 +70,47 @@ check("publish enforces auth, origin, size and slug shape", () => {
 check("drafts are never committed to the public repo", () => {
   const src = read("src/app/api/admin/publish/route.ts");
   assert(src.includes("p.published === false"), "draft posts are not rejected before the git write");
+});
+
+// --- the newer admin routes carry the same posture --------------------------
+// These write to a public git repo and to blob storage respectively, so they
+// need every guard the publish route needs. Asserted here because it is easy
+// to add a fourth route later and forget one of them.
+for (const route of ["course", "media"]) {
+  check(`${route} route enforces auth, origin, size and timeouts`, () => {
+    const src = read(`src/app/api/admin/${route}/route.ts`);
+    assert(src.includes('runtime = "nodejs"'), "not pinned to the nodejs runtime");
+    assert(src.includes('dynamic = "force-dynamic"'), "not marked force-dynamic");
+    assert(src.includes("sessionIsValid"), "no session check");
+    assert(src.includes("Bad origin"), "no Origin check");
+    assert(/413/.test(src), "no explicit oversize rejection");
+    assert(src.includes("AbortSignal.timeout"), "an outbound fetch has no timeout");
+  });
+}
+
+check("media uploads are capped below the platform limit", () => {
+  const src = read("src/app/api/admin/media/route.ts");
+  // Vercel Functions reject a request body over 4.5 MB with their own opaque
+  // English 413. Our cap has to fire first or the panel shows that instead of
+  // the Turkish message.
+  const m = src.match(/MAX_(?:UPLOAD|FILE)_BYTES\s*=\s*([^;]+);/);
+  assert(m, "no MAX_UPLOAD_BYTES / MAX_FILE_BYTES constant to enforce a cap");
+  // The cap is written as `4 * 1024 * 1024`, so read the arithmetic rather
+  // than the first digit — grabbing `4` would pass this check on any value.
+  const expr = m[1].replace(/_/g, "").trim();
+  assert(/^[0-9+* ]+$/.test(expr), `cap is not a plain arithmetic literal: ${m[1].trim()}`);
+  const bytes = expr
+    .split("+")
+    .reduce((sum, term) => sum + term.split("*").reduce((a, b) => a * Number(b), 1), 0);
+  assert(bytes > 0 && bytes <= 4_500_000, `cap of ${bytes} bytes is at or above Vercel's 4.5 MB limit`);
+  assert(/image\/jpeg/.test(src) && /image\/png/.test(src), "content-type allowlist is gone");
+});
+
+check("course data is not filed where the post schema is enforced", () => {
+  // content/posts/*.json is walked by the post check below, which requires a
+  // slug/title/body/date. course.json has none of those and would hard-fail.
+  assert(!existsSync(join(process.cwd(), "content", "posts", "course.json")), "course.json is in content/posts/");
+  assert(existsSync(join(process.cwd(), "content", "course.json")), "content/course.json is missing");
 });
 
 // --- markdown renderer stays escape-first ---------------------------------

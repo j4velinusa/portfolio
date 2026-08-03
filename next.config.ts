@@ -41,6 +41,26 @@ const nextConfig: NextConfig = {
   images: {
     // AVIF first, WebP as the fallback the optimizer negotiates per request.
     formats: ["image/avif", "image/webp"],
+    // The admin media library stores uploads in Vercel Blob. Note this does NOT
+    // need a CSP change: every one of these is rendered through next/image, so
+    // the browser only ever requests same-origin /_next/image and the optimizer
+    // does the remote fetch server-side, where CSP does not apply. `img-src
+    // 'self'` stays as tight as it was.
+    //
+    // `*` matches exactly one subdomain label, which is the <storeId>. Worth
+    // narrowing to the literal store hostname once it is known — it is a stable
+    // per-store constant, and the wildcard currently also admits any other
+    // Vercel customer's public store.
+    remotePatterns: [
+      {
+        protocol: "https",
+        hostname: "*.public.blob.vercel-storage.com",
+        pathname: "/**",
+        // No query strings: an <Image> src carrying `?v=` would be a cache
+        // buster we never emit, so refuse it rather than optimize it.
+        search: "",
+      },
+    ],
   },
   async headers() {
     return [
@@ -69,6 +89,7 @@ const nextConfig: NextConfig = {
       { source: "/stack", destination: "/en/stack", permanent: false },
       { source: "/blog", destination: "/en/blog", permanent: false },
       { source: "/cv", destination: "/en/cv", permanent: false },
+      { source: "/courses", destination: "/en/courses", permanent: false },
     ];
   },
 };

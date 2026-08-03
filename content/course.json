@@ -1,0 +1,143 @@
+{
+  "price": {
+    "en": "₺1,000 / month",
+    "tr": "₺1.000 / ay"
+  },
+  "paymentLink": "",
+  "ctaLabel": {
+    "en": "Get the course",
+    "tr": "Kursu al"
+  },
+  "hero": [
+    { "id": "h1", "image": "/courses/riviera-01.jpg" },
+    { "id": "h2", "image": "/courses/riviera-02.jpg" },
+    { "id": "h3", "image": "/courses/riviera-03.jpg" },
+    { "id": "h4", "image": "/courses/riviera-04.jpg" }
+  ],
+  "gallery": [
+    {
+      "id": "g1",
+      "image": "/courses/riviera-05.jpg",
+      "alt": {
+        "en": "A narrow turquoise water channel running through a cream stucco wall towards an arched opening, with a palm leaning in.",
+        "tr": "Krem sıvalı bir duvarın içinden kemerli bir açıklığa doğru uzanan dar turkuaz su kanalı; kenarda bir palmiye."
+      }
+    },
+    {
+      "id": "g2",
+      "image": "/courses/riviera-06.jpg",
+      "alt": {
+        "en": "Watercolour view straight down onto a green tiled courtyard pool, a leopard stepping into the water between plants and a pink towel.",
+        "tr": "Yeşil çinili bir avlu havuzuna tepeden bakan suluboya; bitkiler ve pembe bir havlunun arasında suya adım atan bir leopar."
+      }
+    },
+    {
+      "id": "g3",
+      "image": "/courses/riviera-03.jpg",
+      "alt": {
+        "en": "Illustration of a vinyl record whose turquoise grooves read as pool water, with three koi swimming across the red centre label.",
+        "tr": "Turkuaz oyukları havuz suyu gibi okunan bir plak illüstrasyonu; kırmızı etiketin çevresinde yüzen üç koi balığı."
+      }
+    },
+    {
+      "id": "g4",
+      "image": "/courses/riviera-04.jpg",
+      "alt": {
+        "en": "Blue and white tile mosaic of two swimmers, one diving, one surfacing, beside an orange lane rope.",
+        "tr": "Turuncu bir kulvar şamandırasının yanında biri dalan biri suya çıkan iki yüzücünün mavi-beyaz çini mozaiği."
+      }
+    },
+    {
+      "id": "g5",
+      "image": "/courses/riviera-01.jpg",
+      "alt": {
+        "en": "Painted overhead view of a varnished wooden speedboat cutting a white wake across deep blue water, two people aboard.",
+        "tr": "Koyu mavi suda beyaz bir iz bırakan cilalı ahşap sürat teknesinin tepeden resmi; güvertede iki kişi."
+      }
+    },
+    {
+      "id": "g6",
+      "image": "/courses/riviera-02.jpg",
+      "alt": {
+        "en": "Two-colour risograph-style beach print: cobalt palm silhouettes over cream sand, small orange parasols along the shore.",
+        "tr": "İki renkli rizograf tarzı sahil baskısı: krem kumun üzerinde kobalt palmiye siluetleri, kıyı boyunca küçük turuncu şemsiyeler."
+      }
+    }
+  ],
+  "modules": [
+    {
+      "id": "m1",
+      "title": {
+        "en": "Building a visual language",
+        "tr": "Görsel dili kurmak"
+      },
+      "summary": {
+        "en": "Reading references, palette, light, composition, texture. Putting a style into words — and seeing how those words change the output.",
+        "tr": "Referans okuma, palet, ışık, kompozisyon, doku. Bir stili kelimelere dökebilmek — ve o kelimelerin çıktıyı nasıl değiştirdiğini görmek."
+      },
+      "lessons": 6
+    },
+    {
+      "id": "m2",
+      "title": {
+        "en": "Magazines and publications",
+        "tr": "Dergi ve yayın"
+      },
+      "summary": {
+        "en": "A 12-page publication for a luxury watch brand: cover, opener, product spread, editorial. Grid, typography and print prep included.",
+        "tr": "Lüks bir saat markası için 12 sayfalık yayın: kapak, açılış, ürün sayfası, editoryal. Izgara, tipografi ve baskıya hazırlık dahil."
+      },
+      "lessons": 8
+    },
+    {
+      "id": "m3",
+      "title": {
+        "en": "Marketing and social",
+        "tr": "Pazarlama ve sosyal"
+      },
+      "summary": {
+        "en": "Campaign sets, post series, ad visuals. Not one image — a brand language that holds together across many.",
+        "tr": "Kampanya seti, post serisi, reklam görselleri. Tek görsel değil — birbirini tutan bir marka dili üretmek."
+      },
+      "lessons": 7
+    },
+    {
+      "id": "m4",
+      "title": {
+        "en": "Interfaces and web",
+        "tr": "Arayüz ve web"
+      },
+      "summary": {
+        "en": "Inspiring sites, app screens, collateral. Connecting generated imagery to a real design system.",
+        "tr": "İlham veren siteler, uygulama ekranları, materyaller. Üretilen görseli gerçek bir tasarım sistemine bağlamak."
+      },
+      "lessons": 7
+    }
+  ],
+  "changelog": [
+    {
+      "id": "c1",
+      "date": "2026-08-01",
+      "title": {
+        "en": "Luxury watch campaign: light and material",
+        "tr": "Lüks saat kampanyası: ışık ve malzeme"
+      }
+    },
+    {
+      "id": "c2",
+      "date": "2026-07-01",
+      "title": {
+        "en": "Magazine grid and typography",
+        "tr": "Dergi ızgarası ve tipografi"
+      }
+    },
+    {
+      "id": "c3",
+      "date": "2026-06-01",
+      "title": {
+        "en": "Reading references workshop",
+        "tr": "Referans okuma atölyesi"
+      }
+    }
+  ]
+}

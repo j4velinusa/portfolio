@@ -32,6 +32,7 @@ export function Nav({ lang, variant = "home" }: { lang: Lang; variant?: "home" |
         <Link href={`${home}/stack`}>{t.stack[lang]}</Link>
         <Link href={`${home}/blog`}>{t.blog[lang]}</Link>
         <Link href={`${home}/about`}>{t.about[lang]}</Link>
+        <Link href={`${home}/courses`}>{t.courses[lang]}</Link>
         <Link href={`${home}/cv`}>{t.cv[lang]}</Link>
         <a href={`${home}#contact`} className="nav-cta">
           {t.contact[lang]}
