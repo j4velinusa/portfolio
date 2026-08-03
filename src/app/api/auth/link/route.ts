@@ -40,9 +40,24 @@ const COPY: Record<Lang, { subject: string; lead: string; button: string; note: 
 export async function POST(req: Request) {
   const key = process.env.RESEND_API_KEY;
   const from = process.env.RESEND_FROM;
-  if (!dbConfigured() || !key || !from || !process.env.SESSION_SECRET) {
+
+  // Names the variables that are actually absent rather than listing all four.
+  // "Something is unconfigured" is unactionable when four things could be, and
+  // a variable NAME is not a secret — publish/route.ts already names its own.
+  const missing = (
+    [
+      ["DATABASE_URL", dbConfigured()],
+      ["RESEND_API_KEY", Boolean(key)],
+      ["RESEND_FROM", Boolean(from)],
+      ["SESSION_SECRET", Boolean(process.env.SESSION_SECRET)],
+    ] as const
+  )
+    .filter(([, present]) => !present)
+    .map(([name]) => name);
+
+  if (missing.length > 0) {
     return NextResponse.json(
-      { error: "Giriş yapılandırılmamış (DATABASE_URL / RESEND_API_KEY / RESEND_FROM / SESSION_SECRET)." },
+      { error: `Giriş yapılandırılmamış — eksik: ${missing.join(", ")}` },
       { status: 503 },
     );
   }
